@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const IdeaSchema = mongoose.Schema({
-    description: String,
+    description: {
+        type: String,
+        required: true
+    },
     phase: {
         type: String,
         enum: [
@@ -24,10 +27,13 @@ const IdeaSchema = mongoose.Schema({
     thoughts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Thought',
-        validate: function (v) { // only the creator or participant can add a thought
-            return this.roomUsers.filter(u => u._id === v.user._id)
+        validate: {
+            validator: function (v) {
+                return this.roomUsers.filter(u => u._id === v.user._id)
+            },
+            message: 'Only the creator or participant can add a thought to this idea.'
         }
-    }], 
+    }],
     ratings: [Number]
 });
 

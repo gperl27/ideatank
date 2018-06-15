@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const User = require('../models/user');
 const Idea = require('../models/idea');
 const Thought = require('../models/Thought');
@@ -112,6 +111,26 @@ describe('User Model', () => {
                     assert(idea.roomUsers.filter(id => id === idea.creator._id).length === 1); // creator is here
                     assert(idea.roomUsers.filter(id => id === idea.participants[0]).length === 1); // participant is here
                     assert(idea.roomUsers.length === 2)
+                    done();
+                })
+        })
+
+        it('thought cannot come from a non-participating user', done => {
+            let tempUser = new User({ name: 'Intruder' });
+            let tempModelUser;
+            tempUser.save()
+                .then(() => {
+                    return User.findOne({ name: 'Intruder' })
+                })
+                .then(user => {
+                    tempModelUser = user;
+
+                    return Idea.findOne({})
+                })
+                .then(idea => {
+                    idea.thoughts.push(tempModelUser)
+                    const error = idea.validateSync();
+                    assert.equal(error.errors['thoughts.0'].message, 'Only the creator or participant can add a thought to this idea.')
                     done();
                 })
         })
