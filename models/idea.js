@@ -2,16 +2,26 @@ const mongoose = require('mongoose');
 
 const IdeaSchema = mongoose.Schema({
     description: String,
-    phase: String, // enum
-    creator: {
+    phase: {
+        type: String,
+        enum: [
+            'problemsBeingSolved',
+            'obstacles',
+            'inspirations',
+            'feasibility'
+        ],
+        default: 'problemsBeingSolved'
+    },
+    creator: { // validate required
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     participants: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    thoughts: [Number],
+    thoughts: [Number], // validate that creator or participant can add these
     ratings: [Number]
 });
 
