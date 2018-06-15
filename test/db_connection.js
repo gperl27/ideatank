@@ -10,10 +10,12 @@ before(done => {
 });
 
 beforeEach((done) => {
-    const { users, ideas } = mongoose.connection.collections;
+    const { users, ideas, thoughts } = mongoose.connection.collections;
 
 
     users.drop(() => {
-        ideas.drop(() => done())
+        ideas.drop(() => {
+            thoughts.drop(() => done())
+        })
     });
 });

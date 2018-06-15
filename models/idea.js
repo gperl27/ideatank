@@ -21,11 +21,19 @@ const IdeaSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    thoughts: [Number], // validate that creator or participant can add these
+    thoughts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Thought',
+        validate: function (v) { // only the creator or participant can add a thought
+            return this.roomUsers.filter(u => u._id === v.user._id)
+        }
+    }], 
     ratings: [Number]
 });
 
-// virtual => "usersInRoom" => creator + participants
+IdeaSchema.virtual('roomUsers').get(function () {
+    return [...this.participants, this.creator];
+});
 
 const Idea = mongoose.model('Idea', IdeaSchema);
 

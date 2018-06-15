@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Idea = require('../models/idea');
+const Thought = require('../models/Thought');
 const assert = require('assert');
 
 describe('User Model', () => {
@@ -45,14 +46,19 @@ describe('User Model', () => {
     });
 
     describe('UserIdeas relation', () => {
-        let user;
+        let user, idea, thought, participant;
 
         beforeEach(done => {
             user = new User({ name: 'Greg' });
+            participant = new User({ name: 'Party' })
             idea = new Idea({ description: 'Idea summary' })
+            thought = new Thought({ text: 'This could really work', type: 'pro' })
+            thought.user = user;
             user.ideas.push(idea)
             idea.creator = user;
-            Promise.all([user.save(), idea.save()])
+            idea.thoughts.push(thought)
+            idea.participants.push(participant)
+            Promise.all([user.save(), idea.save(), thought.save(), participant.save()])
                 .then(() => done())
         });
 
@@ -98,6 +104,16 @@ describe('User Model', () => {
                 assert.equal(error.errors['phase'].message, '`penalty box` is not a valid enum value for path `phase`.')
                 done();
             });
+        })
+
+        it('roomUsers include a participant and the creator', done => {
+            Idea.findOne({})
+                .then(idea => {
+                    assert(idea.roomUsers.filter(id => id === idea.creator._id).length === 1); // creator is here
+                    assert(idea.roomUsers.filter(id => id === idea.participants[0]).length === 1); // participant is here
+                    assert(idea.roomUsers.length === 2)
+                    done();
+                })
         })
 
         // ref: https://stackoverflow.com/questions/40836975/delete-documents-from-collection-and-remove-ids-from-an-array-in-another-collect?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
