@@ -1,7 +1,8 @@
+require('dotenv').config()
 const mongoose = require('mongoose');
 
 before(done => {
-    mongoose.connect('mongodb://localhost/ideatank');
+    mongoose.connect(`mongodb://${process.env.DEV_DB_USERNAME}:${process.env.DEV_DB_PASSWORD}@ds263670.mlab.com:63670/ideatank`);
     mongoose.connection
         .once('open', () => { done(); })
         .on('error', (error) => {

@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const Idea = require('../models/idea');
-const Thought = require('../models/Thought');
+const Thought = require('../models/thought');
 const assert = require('assert');
 
 describe('User Model', () => {
