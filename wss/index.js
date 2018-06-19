@@ -1,25 +1,79 @@
 // const url = require('url');
 // const WebSocket = require('ws');
 // const wss = new WebSocket.Server({ port: 8080, clientTracking: true });
-// const User = require('../models/user');
+var mongoose = require('mongoose');
+
+const User = require('../models/user');
+const Idea = require('../models/idea');
 
 module.exports = io => {
     io.on('connection', function (socket) {
-        // to client
-        socket.emit('news', { hello: 'world' });
 
-        socket.join('room237', () => {
-            let rooms = Object.keys(socket.rooms);
-            console.log(rooms); // [ <socket.id>, 'room 237' ]
-        });
+        socket.on('join room', data => {
+            const { idea, participant } = data;
 
-        socket.to('room237').emit('hello', { test: 'test' });
+            socket.join(idea, async () => {
+                await Idea.findById(idea)
+                    .then(idea => {
+                        idea.participants.push(participant)
+                        return idea.save()
+                    })
+
+
+                const ideas = await Idea
+                    .find({ isCompleted: false, phase: 'groupFinding' })
+                    .populate('creator')
+                    .populate('participants')
+
+
+                socket.emit('joined room', ideas);
+            });
+        })
+
+        socket.on('leave room', data => {
+            const { idea, participant } = data;
+
+            socket.join(idea, async () => {
+
+                await Idea.findByIdAndUpdate(idea, {
+                    $pull: { participants: participant }
+                })
+
+                const ideas = await Idea
+                    .find({ isCompleted: false, phase: 'groupFinding' })
+                    .populate('creator')
+                    .populate('participants')
+
+
+                socket.emit('left room', ideas);
+            });
+
+        })
+
+        // socket.to('room237').emit('hello', { test: 'test' });
         // socket.emit('hello', { test: 'test' });
 
-        // on => from client
-        socket.on('chat message', function (data) {
-            console.log(data);
+        socket.on('new idea', async function (data) {
+            const { description, creator } = data;
+
+            await Idea.create({
+                description,
+                creator,
+            })
+
+            const ideas = await Idea
+                .find({ isCompleted: false, phase: 'groupFinding' })
+                .populate('creator')
+                .populate('participants')
+
+            // socket.join('room237', () => {
+            //     let rooms = Object.keys(socket.rooms);
+            //     console.log(rooms); // [ <socket.id>, 'room 237' ]
+            // });
+
+            socket.emit('new idea was made', ideas);
         });
+
         console.log('connected');
     });
 }

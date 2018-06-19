@@ -21,6 +21,10 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * Create Websocket server
+ */
 var io = require('socket.io')(server);
 require('../wss')(io);
 

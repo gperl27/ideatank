@@ -5,19 +5,20 @@ const IdeaSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    completed: {
+    isCompleted: {
         type: Boolean,
         default: false
     },
     phase: {
         type: String,
         enum: [
+            'groupFinding',
             'problemsBeingSolved',
             'obstacles',
             'inspirations',
             'feasibility'
         ],
-        default: 'problemsBeingSolved'
+        default: 'groupFinding'
     },
     creator: { // validate required
         type: mongoose.Schema.Types.ObjectId,

@@ -8,11 +8,28 @@ html(lang="en")
 
   script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js")
   script.
-    var blah = 'test';
-    var socket = io();
-    socket.emit('chat message', 'test');
 
-    socket.on('hello', (data) => {
+    var socket = io();
+    //- socket.emit('new idea', { description: 'New Idea', creator: '5b287d06e3796f038bd48b07'});
+
+    //- socket.emit('join room', { idea: '5b29290a79e36b0153c7a40f', participant: '5b287d06e3796f038bd48b08' });
+
+    socket.on('joined room', (data) => {
       console.log(data);
+      console.log('joined room')
     });
+
+    socket.emit('leave room', { idea: '5b29290a79e36b0153c7a40f', participant: '5b287d06e3796f038bd48b08' });
+
+    socket.on('left room', (data) => {
+      console.log(data);
+      console.log('left room')
+    });
+
+    socket.on('new idea was made', (data) => {
+      console.log(data);
+      console.log('idea was made')
+    });
+
+
   body
