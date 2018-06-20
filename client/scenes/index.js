@@ -1,11 +1,13 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Lobby from './Lobby'
+import Game from './Game'
 
 const App = () =>
-    <div>
+    <Switch>
         <Route exact path="/" component={Lobby} />
-    </div>
+        <Route exact path="/game" component={Game} />
+    </Switch>
 
 
 export default App;

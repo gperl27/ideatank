@@ -9,7 +9,6 @@ import App from './scenes';
 
 const target = document.querySelector('#app');
 
-
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
