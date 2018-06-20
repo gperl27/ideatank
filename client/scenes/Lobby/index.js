@@ -1,4 +1,6 @@
 import React from 'react';
+import { compose, bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -8,7 +10,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 
+import { fetchIdeas } from '../../modules/lobby'
+
 class Lobby extends React.Component {
+
+    componentDidMount() {
+        this.props.fetchIdeas();
+    }
 
     renderPartyMembers() {
         return (
@@ -46,7 +54,18 @@ class Lobby extends React.Component {
     }
 }
 
-// state
-// all ideas in phase one
+// const mapStateToProps = state => ({
+//     count: state.counter.count,
+//     isIncrementing: state.counter.isIncrementing,
+//     isDecrementing: state.counter.isDecrementing
+// });
 
-export default Lobby;
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+        { fetchIdeas },
+        dispatch
+    );
+
+export default compose(
+    connect(null, mapDispatchToProps),
+)(Lobby);
