@@ -2,9 +2,14 @@
   "name": "ideatank",
   "version": "0.0.0",
   "private": true,
+  "nodemonConfig": {
+    "ignore": ["client/, bin/, .cache/"]
+  },
   "scripts": {
-    "start": "nodemon --exec 'node ./bin/www'",
-    "test": "nodemon --exec 'mocha'"
+    "parcel": "parcel client/index.html",
+    "start": "nodemon --ignore client/ --ignore dist/ --ignore .cache/ --exec 'node ./bin/www'",
+    "test": "nodemon --exec 'mocha'",
+    "dev": "concurrently \"npm run start\" \"npm run parcel\""
   },
   "dependencies": {
     "body-parser": "~1.18.2",
@@ -17,7 +22,14 @@
     "mongoose": "^5.1.5",
     "morgan": "~1.9.0",
     "nodemon": "^1.17.5",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "serve-favicon": "~2.4.5",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "concurrently": "^3.6.0",
+    "parcel-bundler": "^1.9.2",
+    "pug": "^2.0.3"
   }
 }
