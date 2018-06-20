@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 
 import { parseNameForAvatar } from '../../util';
 
-import { fetchIdeas } from '../../modules/lobby'
+import { fetchIdeas, joinGame } from '../../modules/lobby'
 
 class Lobby extends React.Component {
 
@@ -48,7 +48,7 @@ class Lobby extends React.Component {
     }
 
     render() {
-        const { ideas } = this.props;
+        const { ideas, joinGame } = this.props;
 
         return (
             <div>
@@ -62,13 +62,13 @@ class Lobby extends React.Component {
                 <div>
                     <Paper>
                         <List>
-                            {ideas.map(idea => (
+                            {ideas && ideas.map(idea => (
                                 <ListItem key={idea._id}>
                                     {console.log(idea)}
                                     <Avatar>{parseNameForAvatar(idea.creator.name)}</Avatar>
                                     <ListItemText primary={idea.description} />
                                     {ideas.partcipants && this.renderPartyMembers(ideas.partcipants)}
-                                    <Button>Join/Leave</Button>
+                                    <Button onClick={() => joinGame(idea)}>Join/Leave</Button>
                                 </ListItem>
                             ))}
                         </List>
@@ -83,11 +83,10 @@ const mapStateToProps = state => ({
     ideas: state.lobby.ideas,
 });
 
-const mapDispatchToProps = dispatch =>
-    bindActionCreators(
-        { fetchIdeas },
-        dispatch
-    );
+const mapDispatchToProps = dispatch => bindActionCreators({
+    fetchIdeas,
+    joinGame
+}, dispatch)
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),
