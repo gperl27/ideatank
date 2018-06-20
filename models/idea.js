@@ -9,16 +9,41 @@ const IdeaSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    phase: {
-        type: String,
+    phase: { // may want to consider using subdocuments in the future for dynamacy
+        type: Object,
         enum: [
-            'groupFinding',
-            'problemsBeingSolved',
-            'obstacles',
-            'inspirations',
-            'feasibility'
+            {
+                order: 0,
+                key: 'groupFinding',
+                length: null,
+                instructions: null
+            },
+            {
+                order: 1,
+                key: 'problemsBeingSolved',
+                length: 120000,
+                instructions: 'Solve Problems Here'
+            },
+            {
+                order: 2,
+                key: 'obstacles',
+                length: 120000,
+                instructions: 'Solve Obstacles Here'
+            },
+            {
+                order: 3,
+                key: 'inspirations',
+                length: 60000,
+                instructions: 'Solve Inspirtations Here'
+            },
+            // { desc: 'feasibility', length: 0.20 },
         ],
-        default: 'groupFinding'
+        default: {
+            order: 0,
+            key: 'groupFinding',
+            length: null,
+            instructions: null
+        },
     },
     creator: { // validate required
         type: mongoose.Schema.Types.ObjectId,

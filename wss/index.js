@@ -1,10 +1,8 @@
-// const url = require('url');
-// const WebSocket = require('ws');
-// const wss = new WebSocket.Server({ port: 8080, clientTracking: true });
-var mongoose = require('mongoose');
-
 const User = require('../models/user');
 const Idea = require('../models/idea');
+
+const oneSecond = 1000;
+const intermissionSeconds = oneSecond * 5; // arbitrary 5 seconds
 
 module.exports = io => {
     io.on('connection', function (socket) {
@@ -50,8 +48,6 @@ module.exports = io => {
 
         })
 
-        // socket.to('room237').emit('hello', { test: 'test' });
-        // socket.emit('hello', { test: 'test' });
 
         socket.on('new idea', async function (data) {
             const { description, creator } = data;
@@ -73,6 +69,49 @@ module.exports = io => {
 
             socket.emit('new idea was made', ideas);
         });
+
+
+        // we can have our client send us the appropriate countdown
+        // since it contains our idea object
+        socket.on('phase start', ({ ideaId, countdown }) => {
+            const timer = setInterval(async function () {
+                socket.emit('timer', countdown);
+                countdown -= oneSecond;
+
+                if (countdown <= 0) {
+                    // clear countodwn immediately
+                    clearInterval(timer);
+
+                    // go to next phase
+                    const ideaPhaseSchema = Idea.schema.paths.phase.options.enum;
+                    const phase = ideaPhaseSchema.filter(phase => phase.order === 4)
+
+                    if (phase.length > 0) {
+                        const idea = await Idea.findByIdAndUpdate(ideaId, { phase: phase[0] }, { new: true })
+                        socket.emit('end phase', idea); // dont forget to send this to the room only
+                    } else {
+                        socket.emit('end game', 'end game'); // probably still want to return idea here
+                    }
+                }
+            }, oneSecond);
+
+        })
+
+        socket.on('intermission', () => {
+            let countdown = intermissionSeconds
+            
+            const timer = setInterval(function () {
+                socket.emit('intermission timer', countdown);
+                countdown -= oneSecond;
+
+                console.log(countdown)
+
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    socket.emit('end intermission');
+                }
+            }, oneSecond)
+        })
 
         console.log('connected');
     });
