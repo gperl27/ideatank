@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.render('index');
+router.get('/', (req, res, next) => {
   // res.send('users'); dont delete this, we'll use it eventually
 });
 
