@@ -10,6 +10,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 
+import { parseNameForAvatar } from '../../util';
+
 import { fetchIdeas } from '../../modules/lobby'
 
 class Lobby extends React.Component {
@@ -18,13 +20,36 @@ class Lobby extends React.Component {
         this.props.fetchIdeas();
     }
 
-    renderPartyMembers() {
+    renderPartyMembers(partcipants) {
+        let size = 3;
+        const Partcipants = partcipants
+            .slice(0, size)
+            .map(value => {
+                return (
+                    <Avatar key={value._id}>
+                        {parseNameForAvatar(value.name)}
+                    </Avatar>
+                )
+            })
+
+        const ExtraParticipantCounter = partcipants.length > size ?
+            <Avatar>
+                +{partcipants.lenght - size}
+            </Avatar>
+            :
+            null
+
         return (
-            [0, 1, 2].map(value => <Avatar key={value} alt="Remy Sharp" src="#" />)
+            <div>
+                <Partcipants />
+                <ExtraParticipantCounter />
+            </div>
         )
     }
 
     render() {
+        const { ideas } = this.props;
+
         return (
             <div>
                 <div>
@@ -37,28 +62,26 @@ class Lobby extends React.Component {
                 <div>
                     <Paper>
                         <List>
-                            {[0, 1, 2, 3].map(value => (
-                                <ListItem key={value}>
-                                    <Avatar alt="Remy Sharp" src="#" />
-                                    <ListItemText primary={`Idea description ${value + 1}`} />
-                                    {this.renderPartyMembers()}
-                                    {true ? <Avatar>+3</Avatar> : null}
+                            {ideas.map(idea => (
+                                <ListItem key={idea._id}>
+                                    {console.log(idea)}
+                                    <Avatar>{parseNameForAvatar(idea.creator.name)}</Avatar>
+                                    <ListItemText primary={idea.description} />
+                                    {ideas.partcipants && this.renderPartyMembers(ideas.partcipants)}
                                     <Button>Join/Leave</Button>
                                 </ListItem>
                             ))}
                         </List>
                     </Paper>
                 </div>
-            </div>
+            </div >
         )
     }
 }
 
-// const mapStateToProps = state => ({
-//     count: state.counter.count,
-//     isIncrementing: state.counter.isIncrementing,
-//     isDecrementing: state.counter.isDecrementing
-// });
+const mapStateToProps = state => ({
+    ideas: state.lobby.ideas,
+});
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
@@ -67,5 +90,5 @@ const mapDispatchToProps = dispatch =>
     );
 
 export default compose(
-    connect(null, mapDispatchToProps),
+    connect(mapStateToProps, mapDispatchToProps),
 )(Lobby);
