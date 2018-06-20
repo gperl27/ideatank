@@ -12,12 +12,12 @@ html(lang="en")
     var socket = io();
     //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b287d06e3796f038bd48b07'});
 
-    socket.emit('join room', { idea: '5b29290a79e36b0153c7a40f', participant: '5b287d06e3796f038bd48b08' });
+    //- socket.emit('join room', { idea: '5b29290a79e36b0153c7a40f', participant: '5b287d06e3796f038bd48b08' });
 
-    socket.on('joined room', (data) => {
-      console.log(data);
-      console.log('joined room')
-    });
+    //- socket.on('joined room', (data) => {
+    //-   console.log(data);
+    //-   console.log('joined room')
+    //- });
 
     //- socket.emit('leave room', { idea: '5b29290a79e36b0153c7a40f', participant: '5b287d06e3796f038bd48b08' });
 
@@ -32,7 +32,7 @@ html(lang="en")
     //- });
 
     
-    //- socket.on('timer', data => {
+    //- socket.on('phase timer', data => {
     //-   console.log(data);
     //- })
 
@@ -46,14 +46,19 @@ html(lang="en")
     //-   console.log(data);
     //- })
 
-    socket.emit('intermission');
+    //- socket.emit('intermission');
     
-    socket.on('intermission timer', data => {
-      console.log('intermission timer', data);
-    })
+    //- socket.on('intermission timer', data => {
+    //-   console.log('intermission timer', data);
+    //- })
 
-    socket.on('end intermission', () => {
-      console.log('end intermission');
+    //- socket.on('end intermission', () => {
+    //-   console.log('end intermission');
+    //- })
+
+    socket.on('added thought', data => {
+      console.log(data, 'added thgouht')
+      // dispatch here
     })
 
   body

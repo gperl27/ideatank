@@ -15,24 +15,28 @@ const IdeaSchema = mongoose.Schema({
             {
                 order: 0,
                 key: 'groupFinding',
+                thoughtType: null,
                 length: null,
                 instructions: null
             },
             {
                 order: 1,
                 key: 'problemsBeingSolved',
+                thoughtType: 'pro',
                 length: 120000,
                 instructions: 'Solve Problems Here'
             },
             {
                 order: 2,
                 key: 'obstacles',
+                thoughtType: 'con',
                 length: 120000,
                 instructions: 'Solve Obstacles Here'
             },
             {
                 order: 3,
                 key: 'inspirations',
+                thoughtType: 'inspiration',
                 length: 60000,
                 instructions: 'Solve Inspirtations Here'
             },

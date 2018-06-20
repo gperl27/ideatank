@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Idea = require('../models/idea');
+const Thought = require('../models/thought');
 
 const oneSecond = 1000;
 const intermissionSeconds = oneSecond * 5; // arbitrary 5 seconds
@@ -75,7 +76,7 @@ module.exports = io => {
         // since it contains our idea object
         socket.on('phase start', ({ ideaId, countdown }) => {
             const timer = setInterval(async function () {
-                socket.emit('timer', countdown);
+                socket.emit('phase timer', countdown);
                 countdown -= oneSecond;
 
                 if (countdown <= 0) {
@@ -84,7 +85,7 @@ module.exports = io => {
 
                     // go to next phase
                     const ideaPhaseSchema = Idea.schema.paths.phase.options.enum;
-                    const phase = ideaPhaseSchema.filter(phase => phase.order === 4)
+                    const phase = ideaPhaseSchema.filter(phase => phase.order === 3) // CHANGE THIS TO IDEA OBJ
 
                     if (phase.length > 0) {
                         const idea = await Idea.findByIdAndUpdate(ideaId, { phase: phase[0] }, { new: true })
@@ -99,7 +100,7 @@ module.exports = io => {
 
         socket.on('intermission', () => {
             let countdown = intermissionSeconds
-            
+
             const timer = setInterval(function () {
                 socket.emit('intermission timer', countdown);
                 countdown -= oneSecond;
@@ -113,57 +114,18 @@ module.exports = io => {
             }, oneSecond)
         })
 
+        socket.on('add thought', async ({ idea, uid, newThought }) => {
+            // broadcast thought to group
+            socket.emit('added thought', thought); // send to group only
+
+            // save to db
+            thought = new Thought({ text: newThought, type: idea.phase.thoughtType, user: uid })
+            await thought.save()
+            Idea.findByIdAndUpdate(idea._id, { $push: { $thoughts: $thought } })
+        })
+
+        // todo: is typing
+
         console.log('connected');
     });
 }
-
-// wss.getUniqueID = function () {
-//     function s4() {
-//         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-//     }
-//     return s4() + s4() + '-' + s4();
-// };
-
-// const lobby = {};
-// const rooms = {};
-
-// wss.on('connection', async function (ws, req) {
-
-//     // remove client from lobby
-//     ws.on('close', function () {
-//         console.log('close');
-
-//         delete lobby[ws.uid];
-
-//         wss.clients.forEach(function (client) {
-//             client.send(JSON.stringify(lobby))
-//         });
-//     })
-
-//     ws.on('message', function incoming(message) {
-//         console.log('received: %s', message);
-//     });
-
-//     const parameters = url.parse(req.url, true);
-//     const { uid } = parameters.query;
-//     const user = await User.findById(uid);
-
-//     // add uid to this specific socket
-//     ws.uid = user._id;
-
-//     // add user to the lobby
-//     lobby[user._id] = {
-//         _id: user.id,
-//         name: user.name,
-//         image: '',
-//     };
-
-//     // ws.uid = wss.getUniqueID();
-
-
-//     wss.clients.forEach(function (client) {
-//         client.send(JSON.stringify(lobby))
-//     });
-
-//     // ws.send(`new user connected: uid: ${ws.uid}`);
-// });
