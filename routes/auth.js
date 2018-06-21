@@ -1,3 +1,4 @@
+require('dotenv');
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -8,7 +9,7 @@ const requireSignin = passport.authenticate('local', { session: false });
 
 function tokenForUser(user) {
     const timestamp = new Date().getTime();
-    return jwt.sign({ sub: user._id, iat: timestamp }, 'secret-key-here')
+    return jwt.sign({ sub: user._id, iat: timestamp }, procces.env.JWT_SECRET)
 }
 
 router.post('/login', requireSignin, function (req, res, next) {
