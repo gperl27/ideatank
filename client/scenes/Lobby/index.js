@@ -13,7 +13,7 @@ import CreateIdeaForm from './components/CreateIdeaForm'
 
 import { parseNameForAvatar } from '../../util';
 
-import { fetchIdeas, joinGame } from '../../modules/lobby'
+import { fetchIdeas, joinGame, createIdea } from '../../modules/lobby'
 
 class Lobby extends React.Component {
 
@@ -21,9 +21,10 @@ class Lobby extends React.Component {
         this.props.fetchIdeas();
     }
 
-    submit(values) {
+    submit = ({ description }) => {
+        console.log(description, 'description')
         // print the form values to the console
-        console.log(values)
+        this.props.createIdea({ description })
     }
 
     renderPartyMembers(participants) {
@@ -88,7 +89,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     fetchIdeas,
-    joinGame
+    joinGame,
+    createIdea,
 }, dispatch)
 
 export default compose(

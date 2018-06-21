@@ -17,7 +17,7 @@ let CreateIdeaForm = props => {
     return (
         <form onSubmit={handleSubmit}>
             <Field
-                name="idea"
+                name="description"
                 component={renderTextField}
                 label="Enter Idea"
                 margin="normal"

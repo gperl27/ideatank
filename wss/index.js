@@ -51,16 +51,14 @@ module.exports = io => {
         })
 
 
-        socket.on('new idea', async function (data) {
-            const { description, creator } = data;
-
+        socket.on('new idea', async function ({ description, creator }) {
             await Idea.create({
                 description,
                 creator,
             })
 
             const ideas = await Idea
-                .find({ isCompleted: false, phase: 'groupFinding' })
+                .find({ isCompleted: false, 'phase.key': 'groupFinding' })
                 .populate('creator')
                 .populate('participants')
 
@@ -69,7 +67,7 @@ module.exports = io => {
             //     console.log(rooms); // [ <socket.id>, 'room 237' ]
             // });
 
-            socket.emit('new idea was made', ideas);
+            io.of('/').emit('created idea', ideas);
         });
 
 
