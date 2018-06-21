@@ -1,5 +1,6 @@
 import axios from 'axios';
 import io from 'socket.io-client';
+import { reset } from 'redux-form'
 import store from '../store';
 
 const socket = io('http://localhost:3000');
@@ -42,6 +43,7 @@ export const joinGame = idea => dispatch => {
 export const createIdea = ({ description }) => dispatch => {
     socket.emit('new idea', { description, creator: '5b287d06e3796f038bd48b07' });
 
+    dispatch(reset('createIdea'))
     //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b287d06e3796f038bd48b07'});
 }
 

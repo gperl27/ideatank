@@ -1,6 +1,7 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField';
 import { Field, reduxForm } from 'redux-form'
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 const renderTextField = ({
     input,
@@ -17,11 +18,12 @@ let CreateIdeaForm = props => {
     return (
         <form onSubmit={handleSubmit}>
             <Field
-                name="description"
+                name='description'
                 component={renderTextField}
-                label="Enter Idea"
-                margin="normal"
+                label='Enter Idea'
+                margin='normal'
             />
+            <Button type='submit'>Submit</Button>
         </form>
     )
 }

@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 
 import CreateIdeaForm from './components/CreateIdeaForm'
 
@@ -22,7 +23,6 @@ class Lobby extends React.Component {
     }
 
     submit = ({ description }) => {
-        console.log(description, 'description')
         // print the form values to the console
         this.props.createIdea({ description })
     }
@@ -66,14 +66,16 @@ class Lobby extends React.Component {
                 <div>
                     <Paper>
                         <List>
-                            {ideas && ideas.map(idea => (
-                                <ListItem key={idea._id}>
-                                    {console.log(idea)}
-                                    <Avatar>{parseNameForAvatar(idea.creator.name)}</Avatar>
-                                    <ListItemText primary={idea.description} />
-                                    {idea.participants && this.renderPartyMembers(idea.participants)}
-                                    <Button onClick={() => joinGame(idea)}>Join/Leave</Button>
-                                </ListItem>
+                            {ideas && ideas.map((idea, i) => (
+                                <div>
+                                    <ListItem key={idea._id}>
+                                        <Avatar>{parseNameForAvatar(idea.creator.name)}</Avatar>
+                                        <ListItemText primary={idea.description} />
+                                        {idea.participants && this.renderPartyMembers(idea.participants)}
+                                        <Button onClick={() => joinGame(idea)}>Join/Leave</Button>
+                                    </ListItem>
+                                    {ideas.length - 1 !== i ? <Divider /> : null}
+                                </div>
                             ))}
                         </List>
                     </Paper>
