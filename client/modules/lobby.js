@@ -1,5 +1,6 @@
 import axios from 'axios';
 import io from 'socket.io-client';
+import store from '../store';
 
 const socket = io('http://localhost:3000');
 
@@ -33,6 +34,16 @@ export const fetchIdeas = () => async dispatch => {
 
 // UI
 export const joinGame = idea => dispatch => {
-    console.log(idea);
+    socket.emit('join room', { idea, participant: '5b287d06e3796f038bd48b08' });
+
     //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b287d06e3796f038bd48b07'});
 }
+
+// websocket listeners
+socket.on('joined room', (data) => {
+    console.log('joined room and a lobby')
+    store.dispatch({
+        type: FETCH_IDEAS,
+        payload: data
+    })
+});

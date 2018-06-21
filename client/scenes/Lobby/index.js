@@ -1,7 +1,6 @@
 import React from 'react';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
@@ -9,6 +8,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+
+import CreateIdeaForm from './components/CreateIdeaForm'
 
 import { parseNameForAvatar } from '../../util';
 
@@ -20,29 +21,34 @@ class Lobby extends React.Component {
         this.props.fetchIdeas();
     }
 
-    renderPartyMembers(partcipants) {
+    submit(values) {
+        // print the form values to the console
+        console.log(values)
+    }
+
+    renderPartyMembers(participants) {
         let size = 3;
-        const Partcipants = partcipants
+        const Participants = participants
             .slice(0, size)
-            .map(value => {
+            .map((value, i) => {
                 return (
-                    <Avatar key={value._id}>
+                    <Avatar key={i}>
                         {parseNameForAvatar(value.name)}
                     </Avatar>
                 )
             })
 
-        const ExtraParticipantCounter = partcipants.length > size ?
+        const ExtraParticipantCounter = participants.length > size ?
             <Avatar>
-                +{partcipants.lenght - size}
+                +{participants.length - size}
             </Avatar>
             :
             null
 
         return (
             <div>
-                <Partcipants />
-                <ExtraParticipantCounter />
+                {Participants}
+                {ExtraParticipantCounter}
             </div>
         )
     }
@@ -54,10 +60,7 @@ class Lobby extends React.Component {
             <div>
                 <div>
                     <Typography variant="title">Have an idea?</Typography>
-                    <TextField
-                        label="Name"
-                        margin="normal"
-                    />
+                    <CreateIdeaForm onSubmit={this.submit} />
                 </div>
                 <div>
                     <Paper>
@@ -67,7 +70,7 @@ class Lobby extends React.Component {
                                     {console.log(idea)}
                                     <Avatar>{parseNameForAvatar(idea.creator.name)}</Avatar>
                                     <ListItemText primary={idea.description} />
-                                    {ideas.partcipants && this.renderPartyMembers(ideas.partcipants)}
+                                    {idea.participants && this.renderPartyMembers(idea.participants)}
                                     <Button onClick={() => joinGame(idea)}>Join/Leave</Button>
                                 </ListItem>
                             ))}

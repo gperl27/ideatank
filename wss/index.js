@@ -11,8 +11,8 @@ module.exports = io => {
         socket.on('join room', data => {
             const { idea, participant } = data;
 
-            socket.join(idea, async () => {
-                await Idea.findById(idea)
+            socket.join(idea._id, async () => {
+                await Idea.findById(idea._id)
                     .then(idea => {
                         idea.participants.push(participant)
                         return idea.save()
@@ -20,12 +20,13 @@ module.exports = io => {
 
 
                 const ideas = await Idea
-                    .find({ isCompleted: false, phase: 'groupFinding' })
+                    .find({ isCompleted: false, 'phase.key': 'groupFinding' })
                     .populate('creator')
                     .populate('participants')
 
 
-                socket.emit('joined room', ideas);
+                // use 'of' to broadcast to everyone
+                io.of('/').emit('joined room', ideas);
             });
         })
 
