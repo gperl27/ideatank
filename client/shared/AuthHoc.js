@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { signout } from '../modules/auth';
+import { signout, fetchAuthUser } from '../modules/auth';
 
 export default ChildComponent => {
     class ComposedComponent extends Component {
         // Our component just got rendered
         componentDidMount() {
+            if (!this.props.authUser) {
+                this.props.fetchAuthUser();
+            }
+
             this.shouldNavigateAway();
         }
 
@@ -17,19 +21,27 @@ export default ChildComponent => {
 
         shouldNavigateAway() {
             if (!localStorage.token) {
-                console.log(this.props);
                 this.props.signout();
             }
         }
 
         render() {
+            if (!this.props.authUser) {
+                return <div>Loading...</div>
+            }
+
             return <ChildComponent {...this.props} />;
         }
     }
 
+    const mapStateToProps = state => ({
+        authUser: state.auth.authUser,
+    });
+
     const mapDispatchToProps = dispatch => bindActionCreators({
         signout,
+        fetchAuthUser,
     }, dispatch)
 
-    return connect(null, mapDispatchToProps)(ComposedComponent);
+    return connect(mapStateToProps, mapDispatchToProps)(ComposedComponent);
 };

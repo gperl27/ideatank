@@ -7,7 +7,7 @@ const socket = io('http://localhost:3000');
 export const FETCH_IDEAS = 'lobby/FETCH_IDEAS';
 
 const initialState = {
-    ideas: [],
+    ideas: null,
 };
 
 export default (state = initialState, action) => {

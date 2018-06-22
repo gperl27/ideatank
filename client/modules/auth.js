@@ -33,9 +33,10 @@ export default (state = initialState, action) => {
 export const fetchAuthUser = () => async dispatch => {
     try {
         const response = await axios.get('http://localhost:3000/api/auth/user')
-        console.log(response);
+        dispatch({ type: AUTH_USER, payload: response.data })
     } catch (e) {
-        console.log(e, e.message, 'use universal handler here');
+        console.log(e, e.message);
+        dispatch(signout());
     }
 }
 

@@ -13,23 +13,28 @@ const renderTextField = ({
         />
     )
 
-let CreateIdeaForm = props => {
-    const { handleSubmit } = props
-    return (
-        <form onSubmit={handleSubmit}>
-            <Field
-                name='description'
-                component={renderTextField}
-                label='Enter Idea'
-                margin='normal'
-            />
-            <Button type='submit'>Submit</Button>
-        </form>
-    )
-}
+const CreateIdea = ({
+    handleSubmit,
+    didAuthUserCreateAnIdea
+}) =>
+    <form onSubmit={handleSubmit}>
+        <Field
+            disabled={didAuthUserCreateAnIdea}
+            name='description'
+            component={renderTextField}
+            label='Enter Idea'
+            margin='normal'
+        />
+        <Button
+            disabled={didAuthUserCreateAnIdea}
+            type='submit'
+        >
+            Submit
+        </Button>
+    </form>
 
-CreateIdeaForm = reduxForm({
+const CreateIdeaForm = reduxForm({
     form: 'createIdea'
-})(CreateIdeaForm)
+})(CreateIdea)
 
 export default CreateIdeaForm
