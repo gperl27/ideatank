@@ -1,9 +1,9 @@
-import axios from 'axios';
-
+import { push } from 'react-router-redux';
 import { reset } from 'redux-form'
-import { AUTH_USER, AUTH_ERROR } from './types';
 export const AUTH_USER = 'auth/AUTH_USER';
 export const AUTH_ERROR = 'auth/AUTH_ERROR';
+
+import { removeToken, fetchToken } from '../lib/auth';
 
 const initialState = {
     authUser: null,
@@ -30,42 +30,36 @@ export default (state = initialState, action) => {
     }
 };
 
+export const fetchAuthUser = () => async dispatch => {
+    try {
+        const response = await axios.get('http://localhost:3000/api/auth/user')
+        console.log(response);
+    } catch (e) {
+        console.log(e, e.message, 'use universal handler here');
+    }
+}
+
 
 export const signup = formProps => async dispatch => {
-    try {
-        const response = await axios.post(
-            'http://localhost:3000/api/register',
-            formProps
-        );
-
-        dispatch({ type: AUTH_USER, payload: response.data.token });
-        localStorage.setItem('token', response.data.token);
-        callback();
-    } catch (e) {
-        dispatch({ type: AUTH_ERROR, payload: 'Email in use' });
-    }
+    fetchToken(
+        'http://localhost:3000/api/auth/register',
+        { email: 'greg2@test.com', password: '123456' },
+        () => dispatch(push('/')),
+        (e) => dispatch({ type: AUTH_ERROR, payload: e.message })
+    )
 };
 
-export const signin = (formProps, callback) => async dispatch => {
-    try {
-        const response = await axios.post(
-            'http://localhost:3090/signin',
-            formProps
-        );
-
-        dispatch({ type: AUTH_USER, payload: response.data.token });
-        localStorage.setItem('token', response.data.token);
-        callback();
-    } catch (e) {
-        dispatch({ type: AUTH_ERROR, payload: 'Invalid login credentials' });
-    }
+export const signin = formProps => async dispatch => {
+    fetchToken(
+        'http://localhost:3000/api/auth/login',
+        { email: 'greg@test.com', password: '123456' },
+        () => dispatch(push('/')),
+        (e) => dispatch({ type: AUTH_ERROR, payload: e.message })
+    )
 };
 
-export const signout = () => {
-    localStorage.removeItem('token');
-
-    return {
-        type: AUTH_USER,
-        payload: ''
-    };
+export const signout = () => dispatch => {
+    dispatch({ type: AUTH_USER, payload: null });
+    dispatch(push('/login'));
+    removeToken()
 };

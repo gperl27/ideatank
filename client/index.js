@@ -7,9 +7,15 @@ import { combineReducers } from 'redux';
 import { ConnectedRouter } from 'connected-react-router'
 import store, { history } from './store';
 
+window.axios = require('axios');
+
 import App from './scenes';
 
 const target = document.querySelector('#app');
+
+if (localStorage.token) {
+    axios.defaults.headers.common['Authorization'] = localStorage.token;
+}
 
 const renderApp = () => {
     return ReactDOM.render(

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import io from 'socket.io-client';
 import { reset } from 'redux-form'
 import store from '../store';
@@ -35,16 +34,16 @@ export const fetchIdeas = () => async dispatch => {
 
 // UI
 export const joinGame = idea => dispatch => {
-    socket.emit('join room', { idea, participant: '5b287d06e3796f038bd48b08' });
+    socket.emit('join room', { idea, participant: '5b2c81319a567d377fdf7301' });
 
-    //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b287d06e3796f038bd48b07'});
+    //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b2c81319a567d377fdf7301'});
 }
 
 export const createIdea = ({ description }) => dispatch => {
-    socket.emit('new idea', { description, creator: '5b287d06e3796f038bd48b07' });
+    socket.emit('new idea', { description, creator: '5b2c81319a567d377fdf7301' });
 
     dispatch(reset('createIdea'))
-    //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b287d06e3796f038bd48b07'});
+    //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b2c81319a567d377fdf7301'});
 }
 
 // websocket listeners

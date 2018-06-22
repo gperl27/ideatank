@@ -16,7 +16,6 @@ router.get('/user', function (req, res, next) {
     if (req.headers && req.headers.authorization) {
         let decoded;
         let authorization = req.headers.authorization;
-        console.log(authorization)
         try {
             decoded = jwt.verify(authorization, process.env.JWT_SECRET);
         } catch (e) {
@@ -24,9 +23,8 @@ router.get('/user', function (req, res, next) {
         }
         var userId = decoded.sub;
         // Fetch the user by id 
-        User.findOne({ _id: userId })
+        return User.findOne({ _id: userId })
             .then(function (user) {
-                // Do something with the user
                 return res.send(user);
             });
     }

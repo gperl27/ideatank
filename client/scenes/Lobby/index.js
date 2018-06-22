@@ -15,6 +15,7 @@ import CreateIdeaForm from './components/CreateIdeaForm'
 import { parseNameForAvatar } from '../../util';
 
 import { fetchIdeas, joinGame, createIdea } from '../../modules/lobby'
+import { signout } from '../../modules/auth';
 
 class Lobby extends React.Component {
 
@@ -55,10 +56,11 @@ class Lobby extends React.Component {
     }
 
     render() {
-        const { ideas, joinGame } = this.props;
+        const { ideas, joinGame, signout } = this.props;
 
         return (
             <div>
+                <Button onClick={signout}>Logout</Button>
                 <div>
                     <Typography variant="title">Have an idea?</Typography>
                     <CreateIdeaForm onSubmit={this.submit} />
@@ -93,6 +95,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     fetchIdeas,
     joinGame,
     createIdea,
+    signout,
 }, dispatch)
 
 export default compose(

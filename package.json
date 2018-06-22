@@ -6,10 +6,10 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "parcel": "parcel client/index.html",
+    "parcel": "parcel client/index.html --no-hmr",
     "start": "nodemon --ignore client/ --ignore dist/ --ignore .cache/ --exec 'node ./bin/www'",
     "test": "nodemon --exec 'mocha'",
-    "dev": "concurrently \"rm -rf .cache\" \"npm run start\" \"npm run parcel\""
+    "dev": "concurrently \"npm run start\" \"npm run parcel\""
   },
   "dependencies": {
     "@material-ui/core": "^1.2.2",
