@@ -10,7 +10,7 @@ const localLogin = new LocalStrategy(localOptions, function (email, password, do
     // Verify this email and password, call done with the user
     // if it is the correct email and password
     // otherwise, call done with false
-    User.findOne({ email: email }, function (err, user) {
+    User.findOne({ email: email }, '+password', function (err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false); }
 
@@ -27,7 +27,7 @@ const localLogin = new LocalStrategy(localOptions, function (email, password, do
 // Setup options for JWT Strategy
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-    secretOrKey: procces.env.JWT_SECRET
+    secretOrKey: process.env.JWT_SECRET
 };
 
 // Create JWT strategy

@@ -9,13 +9,36 @@ const requireSignin = passport.authenticate('local', { session: false });
 
 function tokenForUser(user) {
     const timestamp = new Date().getTime();
-    return jwt.sign({ sub: user._id, iat: timestamp }, procces.env.JWT_SECRET)
+    return jwt.sign({ sub: user._id, iat: timestamp }, process.env.JWT_SECRET)
 }
+
+router.get('/user', function (req, res, next) {
+    if (req.headers && req.headers.authorization) {
+        let decoded;
+        let authorization = req.headers.authorization;
+        console.log(authorization)
+        try {
+            decoded = jwt.verify(authorization, process.env.JWT_SECRET);
+        } catch (e) {
+            return res.status(401).send({ error: 'unauthorized' });
+        }
+        var userId = decoded.sub;
+        // Fetch the user by id 
+        User.findOne({ _id: userId })
+            .then(function (user) {
+                // Do something with the user
+                return res.send(user);
+            });
+    }
+    return res.status(500);
+})
 
 router.post('/login', requireSignin, function (req, res, next) {
     // User has already had their email and password auth'd
     // We just need to give them a token
-    res.send({ token: tokenForUser(req.user) });
+    const { user } = req;
+
+    res.send({ token: tokenForUser(user) });
 });
 
 router.post('/register', function (req, res, next) {
@@ -27,7 +50,7 @@ router.post('/register', function (req, res, next) {
     }
 
     // See if a user with the given email exists
-    User.findOne({ email: email }, function (err, existingUser) {
+    User.findOne({ email: email }, '+password', function (err, existingUser) {
         if (err) { return next(err); }
 
         // If a user with email does exist, return an error
