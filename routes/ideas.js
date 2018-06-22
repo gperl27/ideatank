@@ -9,10 +9,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/lobby', async (req, res, next) => {
-    const ideas = await Idea
-        .find({ isCompleted: false, 'phase.key': 'groupFinding' })
-        .populate('creator')
-        .populate('participants')
+    const ideas = await Idea.findIdeasInLobby();
 
     res.send(ideas);
 });

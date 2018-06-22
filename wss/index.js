@@ -19,10 +19,7 @@ module.exports = io => {
                     })
 
 
-                const ideas = await Idea
-                    .find({ isCompleted: false, 'phase.key': 'groupFinding' })
-                    .populate('creator')
-                    .populate('participants')
+                const ideas = await Idea.findIdeasInLobby();
 
 
                 // use 'of' to broadcast to everyone
@@ -39,10 +36,7 @@ module.exports = io => {
                     $pull: { participants: participant }
                 })
 
-                const ideas = await Idea
-                    .find({ isCompleted: false, phase: 'groupFinding' })
-                    .populate('creator')
-                    .populate('participants')
+                const ideas = await Idea.findIdeasInLobby();
 
 
                 socket.emit('left room', ideas);
@@ -57,10 +51,7 @@ module.exports = io => {
                 creator,
             })
 
-            const ideas = await Idea
-                .find({ isCompleted: false, 'phase.key': 'groupFinding' })
-                .populate('creator')
-                .populate('participants')
+            const ideas = await Idea.findIdeasInLobby();
 
             // socket.join('room237', () => {
             //     let rooms = Object.keys(socket.rooms);

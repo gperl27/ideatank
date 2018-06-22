@@ -75,6 +75,13 @@ IdeaSchema.virtual('roomUsers').get(function () {
     return [...this.participants, this.creator];
 });
 
+IdeaSchema.statics.findIdeasInLobby = function (x, y) {
+    return this.find({ isCompleted: false, 'phase.key': 'groupFinding' })
+        .populate('creator')
+        .populate('participants')
+};
+
+
 const Idea = mongoose.model('Idea', IdeaSchema);
 
 module.exports = Idea;

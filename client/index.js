@@ -3,7 +3,6 @@ import 'typeface-roboto';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { combineReducers } from 'redux';
 import { ConnectedRouter } from 'connected-react-router'
 import store, { history } from './store';
 
