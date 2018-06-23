@@ -64,17 +64,28 @@ module.exports = io => {
         socket.on('cancel game', async data => {
             // validate here that issuer is the creator
 
-            const { idea } = data;
+            const { idea, creator } = data;
 
+            // close out socket channel
+            // socket channels apparently get garbage collected when they are emptied out []
+            // remove Idea from collection
+            // remove idea from User that created it
             io.in(idea._id).clients((error, clients) => {
                 if (error) throw error;
-                console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
-            });
-            // socket.join(idea._id, async () => {
-            //     const ideas = await Idea.findIdeasInLobby();
+                clients.forEach(client => io.sockets.connected[client].leave(idea._id))
 
-            //     io.of('/').emit('lobby refresh', ideas);
-            // })
+                const removeIdeaFromUser = User.findByIdAndUpdate(creator, {
+                    $pull: { ideas: idea._id }
+                })
+
+                const removeIdea = Idea.findByIdAndRemove(idea._id);
+
+                Promise.all([removeIdeaFromUser, removeIdea])
+                    .then(async _ => {
+                        const ideas = await Idea.findIdeasInLobby();
+                        io.of('/').emit('lobby refresh', ideas);
+                    })
+            });
         });
 
 
