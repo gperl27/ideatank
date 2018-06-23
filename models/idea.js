@@ -68,8 +68,8 @@ const IdeaSchema = mongoose.Schema({
             message: 'Only the creator or participant can add a thought to this idea.'
         }
     }],
-    ratings: [Number]
-});
+    ratings: [Number],
+}, { timestamps: true });
 
 IdeaSchema.virtual('roomUsers').get(function () {
     return [...this.participants, this.creator];
@@ -77,6 +77,7 @@ IdeaSchema.virtual('roomUsers').get(function () {
 
 IdeaSchema.statics.findIdeasInLobby = function (x, y) {
     return this.find({ isCompleted: false, 'phase.key': 'groupFinding' })
+        .sort({ createdAt: 'descending' })
         .populate('creator')
         .populate('participants')
 };

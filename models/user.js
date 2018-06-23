@@ -52,7 +52,9 @@ UserSchema.virtual('currentIdea').get(function () {
                 }
             }
         ]
-    }).exec()
+    })
+        .sort({ createdAt: 'descending' })
+        .exec()
 });
 
 const User = mongoose.model('User', UserSchema);
