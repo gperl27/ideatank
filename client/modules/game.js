@@ -65,9 +65,8 @@ export default (state = initialState, action) => {
 // })
 
 // Game Actions
-export const startPhase = idea => dispatch => {
-    dispatch({ type: FETCH_GAME, payload: idea })
-    socket.emit('phase start', { idea });
+export const startPhase = () => (dispatch, getState) => {
+    socket.emit('phase start', { idea: getState().game.activeGame });
 }
 
 // View Logic
@@ -86,7 +85,12 @@ export const delegatePhase = idea => dispatch => {
 
 // websocket listeners
 export const wsListeners = socket => {
-    socket.on('phase timer', data => {
-        store.dispatch({ type: UPDATE_TIMER, payload: data })
+    socket.on('phase timer', ({ countdown }) => {
+        store.dispatch({ type: UPDATE_TIMER, payload: countdown })
+    })
+
+    socket.on('end phase', data => {
+        store.dispatch({ type: UPDATE_TIMER, payload: 'Time is up!' })
+        console.log(data, 'end phase')
     })
 }

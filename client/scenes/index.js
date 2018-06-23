@@ -10,7 +10,7 @@ import AuthHoc from '../shared/AuthHoc';
 const App = () =>
     <Switch>
         <Route exact path="/" component={AuthHoc(Lobby)} />
-        <Route exact path="/game" component={Game} />
+        <Route exact path="/game" component={AuthHoc(Game)} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
     </Switch>

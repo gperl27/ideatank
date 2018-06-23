@@ -73,7 +73,6 @@ class Lobby extends React.Component {
             joinGame,
             leaveGame,
             cancelGame,
-            startGame,
         } = this.props;
 
         const renderButton = (fn, text, disabled = false) =>
@@ -134,7 +133,7 @@ class Lobby extends React.Component {
                                                 {idea.participants && this.renderPartyMembers(idea.participants)}
                                                 {
                                                     authUserIdea && authUserIdea._id === idea._id ?
-                                                        <Button onClick={startGame(authUserIdea)}>
+                                                        <Button onClick={() => startGame(authUserIdea)}>
                                                             Start
                                                         </Button>
                                                         : null

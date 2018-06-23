@@ -23,7 +23,7 @@ const IdeaSchema = mongoose.Schema({
                 order: 1,
                 key: 'problemsBeingSolved',
                 thoughtType: 'pro',
-                length: 120000,
+                length: 10000,
                 instructions: 'Solve Problems Here'
             },
             {
