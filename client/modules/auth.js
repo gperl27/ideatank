@@ -41,19 +41,19 @@ export const fetchAuthUser = () => async dispatch => {
 }
 
 
-export const signup = formProps => async dispatch => {
+export const signup = formData => async dispatch => {
     fetchToken(
         'http://localhost:3000/api/auth/register',
-        { email: 'greg2@test.com', password: '123456' },
+        formData,
         () => dispatch(push('/')),
         (e) => dispatch({ type: AUTH_ERROR, payload: e.message })
     )
 };
 
-export const signin = formProps => async dispatch => {
+export const signin = formData => async dispatch => {
     fetchToken(
         'http://localhost:3000/api/auth/login',
-        { email: 'greg@test.com', password: '123456' },
+        formData,
         () => dispatch(push('/')),
         (e) => dispatch({ type: AUTH_ERROR, payload: e.message })
     )

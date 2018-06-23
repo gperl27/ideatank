@@ -1,32 +1,32 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import Button from '@material-ui/core/Button';
-
 import RenderTextField from '../../../shared/RenderTextField';
 
-
-const CreateIdea = ({
+const Register = ({
     handleSubmit,
-    didAuthUserCreateAnIdea
 }) =>
     <form onSubmit={handleSubmit}>
         <Field
-            disabled={didAuthUserCreateAnIdea}
-            name='description'
+            name='email'
             component={RenderTextField}
-            label='Enter Idea'
+            label='Email'
             margin='normal'
         />
-        <Button
-            disabled={didAuthUserCreateAnIdea}
-            type='submit'
-        >
+        <Field
+            name='password'
+            component={RenderTextField}
+            label='Password'
+            margin='normal'
+            type="password"
+        />
+        <Button type='submit'>
             Submit
         </Button>
     </form>
 
-const CreateIdeaForm = reduxForm({
-    form: 'createIdea'
-})(CreateIdea)
+const RegisterForm = reduxForm({
+    form: 'register'
+})(Register)
 
-export default CreateIdeaForm
+export default RegisterForm

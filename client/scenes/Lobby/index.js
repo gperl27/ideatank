@@ -74,7 +74,7 @@ class Lobby extends React.Component {
 
         // handle rendering if user made this event
         let fn, text;
-        if (authUserIdea._id === idea._id) {
+        if (authUserIdea && authUserIdea._id === idea._id) {
             fn = () => console.log('cancel event')
             text = 'Cancel'
 

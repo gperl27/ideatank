@@ -3,30 +3,30 @@ import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom'
-import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 
-import { signin } from '../../modules/auth';
+import { signup } from '../../modules/auth';
 
 
-class Login extends React.Component {
+class Register extends React.Component {
 
-    submit = formData => this.props.signin(formData)
+    submit = formData => this.props.signup(formData)
 
     render() {
         return (
             <div>
-                <Typography variant="headline">Login</Typography>
-                <LoginForm onSubmit={this.submit} />
-                <Link to="/register">Register</Link>
+                <Typography variant="headline">Register</Typography>
+                <RegisterForm onSubmit={this.submit} />
+                <Link to="/login">Login</Link>
             </div>
         )
     }
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    signin,
+    signup,
 }, dispatch)
 
 export default compose(
     connect(null, mapDispatchToProps),
-)(Login);
+)(Register);
