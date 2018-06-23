@@ -5,6 +5,7 @@ export const AUTH_ERROR = 'auth/AUTH_ERROR';
 
 import { removeToken, fetchToken } from '../lib/auth';
 
+import { delegatePhase } from './game'
 import { joinGame } from './lobby';
 
 const initialState = {
@@ -35,8 +36,13 @@ export default (state = initialState, action) => {
 export const fetchAuthUser = () => async dispatch => {
     try {
         const response = await axios.get('http://localhost:3000/api/auth/user')
-        dispatch({ type: AUTH_USER, payload: response.data.user })
-        dispatch(joinGame(response.data.currentIdea, false))
+        const { user, currentIdea } = response.data;
+        dispatch({ type: AUTH_USER, payload: user })
+
+        if (currentIdea) {
+            dispatch(joinGame(currentIdea, false))
+            dispatch(delegatePhase(currentIdea))
+        }
     } catch (e) {
         console.log(e, e.message);
         dispatch(signout());

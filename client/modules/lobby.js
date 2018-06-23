@@ -1,10 +1,9 @@
-import io from 'socket.io-client';
 import { reset } from 'redux-form'
 import store from '../store';
 
-const socket = io('http://localhost:3000');
-
 export const FETCH_IDEAS = 'lobby/FETCH_IDEAS';
+
+import { delegatePhase } from './game'
 
 const initialState = {
     ideas: null,
@@ -23,7 +22,7 @@ export default (state = initialState, action) => {
     }
 };
 
-// Getters
+// Actions
 export const fetchIdeas = () => async dispatch => {
     const result = await axios.get('http://localhost:3000/api/ideas/lobby')
     dispatch({
@@ -32,7 +31,10 @@ export const fetchIdeas = () => async dispatch => {
     })
 };
 
-// UI
+export const startGame = idea => dispatch => {
+    socket.emit('start game', { idea });
+};
+
 export const joinGame = (idea, shouldUpdate = true) => (dispatch, getState) => {
     const { authUser } = getState().auth;
     socket.emit('join room', { idea, participant: authUser._id, shouldUpdate });
@@ -56,10 +58,16 @@ export const createIdea = ({ description }) => (dispatch, getState) => {
 }
 
 // websocket listeners
-socket.on('lobby refresh', (data) => {
-    console.log('lobby refresh')
-    store.dispatch({
-        type: FETCH_IDEAS,
-        payload: data
+export const wsListeners = socket => {
+    socket.on('lobby refresh', data => {
+        console.log('lobby refresh')
+        store.dispatch({
+            type: FETCH_IDEAS,
+            payload: data
+        })
     })
-});
+
+    socket.on('game start', data => {
+        store.dispatch(delegatePhase(data))
+    })
+}

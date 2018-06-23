@@ -20,6 +20,7 @@ import {
     createIdea,
     leaveGame,
     cancelGame,
+    startGame,
 } from '../../modules/lobby'
 import { signout } from '../../modules/auth';
 
@@ -72,6 +73,7 @@ class Lobby extends React.Component {
             joinGame,
             leaveGame,
             cancelGame,
+            startGame,
         } = this.props;
 
         const renderButton = (fn, text, disabled = false) =>
@@ -106,7 +108,7 @@ class Lobby extends React.Component {
     }
 
     render() {
-        const { ideas, signout, authUserIdea } = this.props;
+        const { ideas, signout, authUserIdea, startGame, } = this.props;
 
         return (
             <div>
@@ -132,7 +134,7 @@ class Lobby extends React.Component {
                                                 {idea.participants && this.renderPartyMembers(idea.participants)}
                                                 {
                                                     authUserIdea && authUserIdea._id === idea._id ?
-                                                        <Button onClick={() => console.log('start')}>
+                                                        <Button onClick={startGame(authUserIdea)}>
                                                             Start
                                                         </Button>
                                                         : null
@@ -164,6 +166,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     createIdea,
     cancelGame,
     signout,
+    startGame,
 }, dispatch)
 
 export default compose(

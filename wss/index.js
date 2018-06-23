@@ -88,12 +88,22 @@ module.exports = io => {
             });
         });
 
+        socket.on('start game', async data => {
+            const firstPhase = Idea.schema.paths.phase.options.enum[1];
+            const idea = await Idea.findByIdAndUpdate(data.idea._id, {
+                phase: firstPhase
+            }, { new: true })
+
+            io.in(idea._id).emit('game start', idea);
+        });
+
 
         // we can have our client send us the appropriate countdown
         // since it contains our idea object
-        socket.on('phase start', ({ ideaId, countdown }) => {
+        socket.on('phase start', ({ idea }) => {
             const timer = setInterval(async function () {
-                socket.emit('phase timer', countdown);
+                let countdown = idea.phase.length
+                socket.emit('phase timer', { countdown });
                 countdown -= oneSecond;
 
                 if (countdown <= 0) {
@@ -102,11 +112,11 @@ module.exports = io => {
 
                     // go to next phase
                     const ideaPhaseSchema = Idea.schema.paths.phase.options.enum;
-                    const phase = ideaPhaseSchema.filter(phase => phase.order === 3) // CHANGE THIS TO IDEA OBJ
+                    const phase = ideaPhaseSchema.filter(phase => phase.order === idea.phase.order)
 
                     if (phase.length > 0) {
-                        const idea = await Idea.findByIdAndUpdate(ideaId, { phase: phase[0] }, { new: true })
-                        socket.emit('end phase', idea); // dont forget to send this to the room only
+                        const updatedIdea = await Idea.findByIdAndUpdate(idea._id, { phase: phase[0] }, { new: true })
+                        socket.emit('end phase', updatedIdea); // dont forget to send this to the room only
                     } else {
                         socket.emit('end game', 'end game'); // probably still want to return idea here
                     }

@@ -7,7 +7,7 @@ export default ChildComponent => {
     class ComposedComponent extends Component {
         // Our component just got rendered
         componentDidMount() {
-            if (!this.props.authUser) {
+            if (localStorage.token && !this.props.authUser) {
                 this.props.fetchAuthUser();
             }
 
@@ -26,7 +26,7 @@ export default ChildComponent => {
         }
 
         render() {
-            if (!this.props.authUser) {
+            if (localStorage.token && !this.props.authUser) {
                 return <div>Loading...</div>
             }
 
