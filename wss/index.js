@@ -93,6 +93,9 @@ module.exports = io => {
             const idea = await Idea.findByIdAndUpdate(data.idea._id, {
                 phase: firstPhase
             }, { new: true })
+                .populate('creator')
+                .populate('participants')
+                .populate('thoughts')
 
             io.in(idea._id).emit('game start', idea);
 
@@ -124,9 +127,15 @@ module.exports = io => {
                     if (phase.length > 0) {
                         console.log('updating phase');
                         const updatedIdea = await Idea.findByIdAndUpdate(idea._id, { phase: phase[0] }, { new: true })
-                        io.in(idea._id).emit('end phase', updatedIdea); // dont forget to send this to the room only
+                            .populate('creator')
+                            .populate('participants')
+                            .populate('thoughts')
+
+
+                        io.in(idea._id).emit('end phase');
+                        io.in(idea._id).emit('update game', updatedIdea);
                     } else {
-                        io.in(idea._id).emit('end game', 'end game'); // probably still want to return idea here
+                        io.in(idea._id).emit('end game', 'end game');
                     }
                 }
             }, oneSecond);
@@ -149,14 +158,14 @@ module.exports = io => {
             }, oneSecond)
         })
 
-        socket.on('add thought', async ({ idea, uid, newThought }) => {
-            // broadcast thought to group
-            socket.emit('added thought', thought); // send to group only
+        socket.on('add thought', async ({ idea, uid, text }) => {
+            const newThought = await Thought.create({ text, type: idea.phase.thoughtType, user: uid })
+            const updatedIdea = await Idea.findByIdAndUpdate(idea._id, { $push: { thoughts: newThought } }, { new: true })
+                .populate('creator')
+                .populate('participants')
+                .populate('thoughts')
 
-            // save to db
-            thought = new Thought({ text: newThought, type: idea.phase.thoughtType, user: uid })
-            await thought.save()
-            Idea.findByIdAndUpdate(idea._id, { $push: { $thoughts: $thought } })
+            io.in(idea._id).emit('update game', updatedIdea);
         })
 
         // todo: is typing

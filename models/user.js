@@ -54,6 +54,9 @@ UserSchema.virtual('currentIdea').get(function () {
         ]
     })
         .sort({ createdAt: 'descending' })
+        .populate('creator')
+        .populate('participants')
+        .populate('thoughts')
         .exec()
 });
 
