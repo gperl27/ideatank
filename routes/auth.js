@@ -24,8 +24,10 @@ router.get('/user', function (req, res, next) {
         var userId = decoded.sub;
         // Fetch the user by id 
         return User.findOne({ _id: userId })
-            .then(function (user) {
-                return res.send(user);
+            .then(async function (user) {
+                const currentIdea = await user.currentIdea;
+
+                return res.send({ user, currentIdea });
             });
     }
     return res.status(500);

@@ -39,6 +39,22 @@ UserSchema.methods.comparePassword = function (candidatePassword, callback) {
     });
 }
 
+UserSchema.virtual('currentIdea').get(function () {
+    const Idea = mongoose.model('Idea');
+
+    return Idea.findOne({
+        isCompleted: false,
+        $or: [
+            { creator: this._id },
+            {
+                participants: {
+                    _id: this._id
+                }
+            }
+        ]
+    }).exec()
+});
+
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;

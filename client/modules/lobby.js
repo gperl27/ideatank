@@ -33,30 +33,31 @@ export const fetchIdeas = () => async dispatch => {
 };
 
 // UI
-export const joinGame = idea => dispatch => {
-    socket.emit('join room', { idea, participant: '5b2c81319a567d377fdf7301' });
-
-    //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b2c81319a567d377fdf7301'});
+export const joinGame = (idea, shouldUpdate = true) => (dispatch, getState) => {
+    const { authUser } = getState().auth;
+    socket.emit('join room', { idea, participant: authUser._id, shouldUpdate });
 }
 
-export const createIdea = ({ description }) => dispatch => {
-    socket.emit('new idea', { description, creator: '5b2c81319a567d377fdf7301' });
+export const leaveGame = idea => (dispatch, getState) => {
+    const { authUser } = getState().auth;
+    socket.emit('leave room', { idea, participant: authUser._id });
+}
+
+export const cancelGame = idea => (dispatch, getState) => {
+    const { authUser } = getState().auth;
+    socket.emit('cancel game', { idea, creator: authUser._id });
+}
+
+export const createIdea = ({ description }) => (dispatch, getState) => {
+    const { authUser } = getState().auth;
+    socket.emit('new idea', { description, creator: authUser._id });
 
     dispatch(reset('createIdea'))
-    //- socket.emit('new idea', { description: 'asdfewfqasdf', creator: '5b2c81319a567d377fdf7301'});
 }
 
 // websocket listeners
-socket.on('joined room', (data) => {
-    console.log('joined room and a lobby')
-    store.dispatch({
-        type: FETCH_IDEAS,
-        payload: data
-    })
-});
-
-socket.on('created idea', (data) => {
-    console.log('created idea')
+socket.on('lobby refresh', (data) => {
+    console.log('lobby refresh')
     store.dispatch({
         type: FETCH_IDEAS,
         payload: data

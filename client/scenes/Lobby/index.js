@@ -14,7 +14,13 @@ import CreateIdeaForm from './components/CreateIdeaForm'
 
 import { parseNameForAvatar } from '../../util';
 
-import { fetchIdeas, joinGame, createIdea } from '../../modules/lobby'
+import {
+    fetchIdeas,
+    joinGame,
+    createIdea,
+    leaveGame,
+    cancelGame,
+} from '../../modules/lobby'
 import { signout } from '../../modules/auth';
 
 import { authUserIdea, authUserParticipantIdea } from './selector';
@@ -60,7 +66,13 @@ class Lobby extends React.Component {
     }
 
     renderActionButton = idea => {
-        const { authUserIdea, authUserParticipantIdea, joinGame } = this.props;
+        const {
+            authUserIdea,
+            authUserParticipantIdea,
+            joinGame,
+            leaveGame,
+            cancelGame,
+        } = this.props;
 
         const renderButton = (fn, text, disabled = false) =>
             fn && text &&
@@ -75,7 +87,7 @@ class Lobby extends React.Component {
         // handle rendering if user made this event
         let fn, text;
         if (authUserIdea && authUserIdea._id === idea._id) {
-            fn = () => console.log('cancel event')
+            fn = () => cancelGame(idea)
             text = 'Cancel'
 
             return renderButton(fn, text);
@@ -83,7 +95,7 @@ class Lobby extends React.Component {
 
         // handle render if user is in this party
         if (authUserParticipantIdea && authUserParticipantIdea._id === idea._id) {
-            fn = () => console.log('leave event')
+            fn = () => leaveGame(idea)
             text = 'Leave'
         } else {
             fn = () => joinGame(idea)
@@ -118,6 +130,14 @@ class Lobby extends React.Component {
                                                 <Avatar>{parseNameForAvatar(idea.creator.name)}</Avatar>
                                                 <ListItemText primary={idea.description} />
                                                 {idea.participants && this.renderPartyMembers(idea.participants)}
+                                                {
+                                                    authUserIdea && authUserIdea._id === idea._id ?
+                                                        <Button onClick={() => console.log('start')}>
+                                                            Start
+                                                        </Button>
+                                                        : null
+                                                }
+
                                                 {this.renderActionButton(idea)}
                                             </ListItem>
                                             {ideas.length - 1 !== i ? <Divider /> : null}
@@ -140,7 +160,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     fetchIdeas,
     joinGame,
+    leaveGame,
     createIdea,
+    cancelGame,
     signout,
 }, dispatch)
 

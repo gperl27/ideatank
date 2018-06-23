@@ -9,56 +9,72 @@ module.exports = io => {
     io.on('connection', function (socket) {
 
         socket.on('join room', data => {
-            const { idea, participant } = data;
+            const { idea, participant, shouldUpdate } = data;
 
             socket.join(idea._id, async () => {
-                await Idea.findById(idea._id)
-                    .then(idea => {
-                        idea.participants.push(participant)
-                        return idea.save()
-                    })
+                // we use shouldUpdate to persist connections if users
+                // reload the page or simliar reconnection actions
+                if (shouldUpdate) {
+                    await Idea.findById(idea._id)
+                        .then(idea => {
+                            idea.participants.push(participant)
+                            return idea.save()
+                        })
 
 
-                const ideas = await Idea.findIdeasInLobby();
+                    const ideas = await Idea.findIdeasInLobby();
 
 
-                // use 'of' to broadcast to everyone
-                io.of('/').emit('joined room', ideas);
+                    // use 'of' to broadcast to everyone
+                    io.of('/').emit('lobby refresh', ideas);
+                }
             });
         })
 
         socket.on('leave room', data => {
             const { idea, participant } = data;
 
-            socket.join(idea, async () => {
+            socket.leave(idea._id, async () => {
 
-                await Idea.findByIdAndUpdate(idea, {
+                await Idea.findByIdAndUpdate(idea._id, {
                     $pull: { participants: participant }
                 })
 
                 const ideas = await Idea.findIdeasInLobby();
 
-
-                socket.emit('left room', ideas);
+                io.of('/').emit('lobby refresh', ideas);
             });
 
         })
 
 
-        socket.on('new idea', async function ({ description, creator }) {
-            await Idea.create({
+        socket.on('new idea', async ({ description, creator }) => {
+            const idea = await Idea.create({
                 description,
                 creator,
             })
 
-            const ideas = await Idea.findIdeasInLobby();
+            socket.join(idea._id, async () => {
+                const ideas = await Idea.findIdeasInLobby();
 
-            // socket.join('room237', () => {
-            //     let rooms = Object.keys(socket.rooms);
-            //     console.log(rooms); // [ <socket.id>, 'room 237' ]
-            // });
+                io.of('/').emit('lobby refresh', ideas);
+            })
+        });
 
-            io.of('/').emit('created idea', ideas);
+        socket.on('cancel game', async data => {
+            // validate here that issuer is the creator
+
+            const { idea } = data;
+
+            io.in(idea._id).clients((error, clients) => {
+                if (error) throw error;
+                console.log(clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
+            });
+            // socket.join(idea._id, async () => {
+            //     const ideas = await Idea.findIdeasInLobby();
+
+            //     io.of('/').emit('lobby refresh', ideas);
+            // })
         });
 
 

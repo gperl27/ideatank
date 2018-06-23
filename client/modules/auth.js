@@ -5,6 +5,8 @@ export const AUTH_ERROR = 'auth/AUTH_ERROR';
 
 import { removeToken, fetchToken } from '../lib/auth';
 
+import { joinGame } from './lobby';
+
 const initialState = {
     authUser: null,
     authError: null, // possibly handle errors universally?
@@ -33,7 +35,8 @@ export default (state = initialState, action) => {
 export const fetchAuthUser = () => async dispatch => {
     try {
         const response = await axios.get('http://localhost:3000/api/auth/user')
-        dispatch({ type: AUTH_USER, payload: response.data })
+        dispatch({ type: AUTH_USER, payload: response.data.user })
+        dispatch(joinGame(response.data.currentIdea, false))
     } catch (e) {
         console.log(e, e.message);
         dispatch(signout());
