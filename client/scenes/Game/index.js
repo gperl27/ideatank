@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 
 import CreateThoughtForm from './components/CreateThoughtForm';
 
-import { isCreator } from './selector';
+import { isCreator, isBrainstorming } from './selector';
 
 import {
     startPhase,
@@ -20,11 +20,11 @@ class Game extends React.Component {
     }
 
     render() {
-        const { startPhase, game, timer, isCreator } = this.props;
+        const { startPhase, game, timer, isCreator, isBrainstorming } = this.props;
 
         return (
             <div>
-                {isCreator ? <Button onClick={startPhase}>Start phase</Button> : null}
+                {!isBrainstorming && isCreator ? <Button onClick={startPhase}>Start phase</Button> : null}
                 <div>
                     <Typography variant="title">Time left: {timer}</Typography>
                 </div>
@@ -33,7 +33,10 @@ class Game extends React.Component {
                     :
                     <Typography variant="title">Submit a thought to get started!</Typography>
                 }
-                <CreateThoughtForm onSubmit={this.submit} />
+                <CreateThoughtForm
+                    isBrainstorming={isBrainstorming}
+                    onSubmit={this.submit}
+                />
             </div>
         )
     }
@@ -43,6 +46,7 @@ const mapStateToProps = state => ({
     game: state.game.activeGame,
     timer: state.game.timer,
     isCreator: isCreator(state),
+    isBrainstorming: isBrainstorming(state),
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -31,15 +31,6 @@ export default (state = initialState, action) => {
     }
 };
 
-//- socket.on('phase timer', data => {
-//-   console.log(data);
-//- })
-
-// - socket.emit('phase start', { ideaId: '5b29290a79e36b0153c7a40f', countdown: 3000 });
-
-//- socket.on('end phase', data => {
-//-   console.log(data);
-//- })
 
 //- socket.on('end game', data => {
 //-   console.log(data);
@@ -54,16 +45,6 @@ export default (state = initialState, action) => {
 //- socket.on('end intermission', () => {
 //-   console.log('end intermission');
 //- })
-
-// socket.on('added thought', data => {
-//     console.log(data, 'added thgouht')
-//     // dispatch here
-// })
-
-// ws listeners
-// socket.on('phase timer', ({ countdown }) => {
-//     store.dispatch({ type: UPDATE_TIMER, payload: countdown })
-// })
 
 // Game Actions
 export const startPhase = () => (dispatch, getState) => {
