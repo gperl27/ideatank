@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 
 import CreateThoughtForm from './components/CreateThoughtForm';
 
-import { isCreator, isBrainstorming } from './selector';
+import { isCreator, isBrainstorming, activeThoughtsFromKey } from './selector';
 
 import {
     startPhase,
@@ -20,7 +20,14 @@ class Game extends React.Component {
     }
 
     render() {
-        const { startPhase, game, timer, isCreator, isBrainstorming } = this.props;
+        const {
+            startPhase,
+            game,
+            thoughts,
+            timer,
+            isCreator,
+            isBrainstorming
+        } = this.props;
 
         return (
             <div>
@@ -28,8 +35,8 @@ class Game extends React.Component {
                 <div>
                     <Typography variant="title">Time left: {timer}</Typography>
                 </div>
-                {game && game.thoughts && game.thoughts.length > 0 ?
-                    game.thoughts.map(thought => <div key={thought._id}>{thought.text}</div>)
+                {thoughts && thoughts.length > 0 ?
+                    thoughts.map(thought => <div key={thought._id}>{thought.text}</div>)
                     :
                     <Typography variant="title">Submit a thought to get started!</Typography>
                 }
@@ -45,6 +52,7 @@ class Game extends React.Component {
 const mapStateToProps = state => ({
     game: state.game.activeGame,
     timer: state.game.timer,
+    thoughts: activeThoughtsFromKey(state),
     isCreator: isCreator(state),
     isBrainstorming: isBrainstorming(state),
 });
