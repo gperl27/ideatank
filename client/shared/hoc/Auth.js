@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { signout, fetchAuthUser } from '../modules/auth';
+import { signout, fetchAuthUser } from '../../modules/auth';
 
 export default ChildComponent => {
     class ComposedComponent extends Component {

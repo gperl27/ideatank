@@ -2,7 +2,7 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import Button from '@material-ui/core/Button';
 
-import RenderTextField from '../../../shared/RenderTextField';
+import RenderTextField from '../../../shared/input/RenderTextField';
 
 const CreateThought = ({
     handleSubmit,

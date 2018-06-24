@@ -122,21 +122,25 @@ module.exports = io => {
                     const ideaPhaseSchema = Idea.schema.paths.phase.options.enum;
                     const phase = ideaPhaseSchema.filter(phase => phase.order === idea.phase.order + 1)
 
-                    console.log(phase);
-
+                    let updatedIdea;
                     if (phase.length > 0) {
-                        console.log('updating phase');
-                        const updatedIdea = await Idea.findByIdAndUpdate(idea._id, { phase: phase[0] }, { new: true })
+                        updatedIdea = await Idea.findByIdAndUpdate(idea._id, { phase: phase[0] }, { new: true })
                             .populate('creator')
                             .populate('participants')
                             .populate('thoughts')
 
 
                         io.in(idea._id).emit('end phase');
-                        io.in(idea._id).emit('update game', updatedIdea);
                     } else {
-                        io.in(idea._id).emit('end game', 'end game');
+                        // game over
+                        updatedIdea = await Idea.findByIdAndUpdate(idea._id, { isCompleted: true }, { new: true })
+                            .populate('creator')
+                            .populate('participants')
+                            .populate('thoughts')
+
+                        io.in(idea._id).emit('end game');
                     }
+                    io.in(idea._id).emit('update game', updatedIdea);
                 }
             }, oneSecond);
 

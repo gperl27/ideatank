@@ -89,4 +89,9 @@ export const wsListeners = socket => {
     socket.on('end phase', data => {
         store.dispatch({ type: UPDATE_TIMER, payload: 'Time is up!' })
     })
+
+    socket.on('end game', data => {
+        store.dispatch({ type: UPDATE_TIMER, payload: 'n/a' })
+        store.dispatch(push('/results'))
+    })
 }

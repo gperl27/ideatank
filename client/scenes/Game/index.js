@@ -1,4 +1,5 @@
 import React from 'react';
+import { push } from 'react-router-redux';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +15,10 @@ import {
 } from '../../modules/game'
 
 class Game extends React.Component {
+    componentDidMount() {
+        const { game, redirectToLobby } = this.props;
+        if (!game) { redirectToLobby() }
+    }
 
     submit = ({ text }) => {
         this.props.createThought({ text })
@@ -60,6 +65,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     startPhase,
     createThought,
+    redirectToLobby: () => push('/')
 }, dispatch)
 
 export default compose(
