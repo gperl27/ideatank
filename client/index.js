@@ -20,6 +20,8 @@ import App from './scenes';
 
 const target = document.querySelector('#app');
 
+document.title = process.env.APP_NAME || 'solvr'
+
 if (localStorage.token) {
     axios.defaults.headers.common['Authorization'] = localStorage.token;
 }

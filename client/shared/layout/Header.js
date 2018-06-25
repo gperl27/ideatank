@@ -7,7 +7,7 @@ const Header = () =>
     <AppBar position="static" color="default">
         <Toolbar>
             <Typography variant="title" color="inherit">
-                Ideatank
+                {process.env.APP_NAME || 'solvr'}
             </Typography>
         </Toolbar>
     </AppBar>
