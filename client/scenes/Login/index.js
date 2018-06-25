@@ -1,12 +1,11 @@
 import React from 'react';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom'
 import LoginForm from './components/LoginForm';
 
 import { signin } from '../../modules/auth';
 
+import AuthContainerWrapper from '../../shared/layout/AuthContainerWrapper';
 
 class Login extends React.Component {
 
@@ -14,11 +13,12 @@ class Login extends React.Component {
 
     render() {
         return (
-            <div>
-                <Typography variant="headline">Login</Typography>
+            <AuthContainerWrapper
+                url="/register"
+                urlText="Sign Up"
+            >
                 <LoginForm onSubmit={this.submit} />
-                <Link to="/register">Register</Link>
-            </div>
+            </AuthContainerWrapper>
         )
     }
 }

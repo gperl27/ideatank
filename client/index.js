@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 import 'typeface-roboto';
+import './css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';

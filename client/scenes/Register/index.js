@@ -1,12 +1,10 @@
 import React from 'react';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom'
 import RegisterForm from './components/RegisterForm';
 
 import { signup } from '../../modules/auth';
-
+import AuthContainerWrapper from '../../shared/layout/AuthContainerWrapper';
 
 class Register extends React.Component {
 
@@ -14,11 +12,12 @@ class Register extends React.Component {
 
     render() {
         return (
-            <div>
-                <Typography variant="headline">Register</Typography>
+            <AuthContainerWrapper
+                url="/login"
+                urlText="Login"
+            >
                 <RegisterForm onSubmit={this.submit} />
-                <Link to="/login">Login</Link>
-            </div>
+            </AuthContainerWrapper>
         )
     }
 }

@@ -7,14 +7,14 @@ import Register from './Register'
 import Results from './Results'
 
 import AuthHoc from '../shared/hoc/Auth';
-import AuthWrapper from '../shared/hoc/AuthWrapper';
+import UseHeader from '../shared/hoc/UseHeader';
 
 const App = () =>
     <Switch>
         <Route exact path="/" component={AuthHoc(Lobby)} />
         <Route exact path="/game" component={AuthHoc(Game)} />
-        <Route exact path="/login" component={AuthWrapper(Login)} />
-        <Route exact path="/register" component={AuthWrapper(Register)} />
+        <Route exact path="/login" component={UseHeader(Login)} />
+        <Route exact path="/register" component={UseHeader(Register)} />
         <Route exact path="/results" component={Results} />
     </Switch>
 

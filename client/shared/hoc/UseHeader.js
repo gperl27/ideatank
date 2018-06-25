@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
+import Header from '../layout/Header'
 
 export default ChildComponent => {
     class ComposedComponent extends Component {
         render() {
 
             return (
-                <div>
-                    <div>authwrapper</div>
+                <Fragment>
+                    <Header />
                     <ChildComponent {...this.props} />
-                </div>
+                </Fragment>
             )
         }
     }

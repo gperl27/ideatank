@@ -57,6 +57,7 @@
     "babel-preset-react": "^6.24.1",
     "concurrently": "^3.6.0",
     "core-js": "^2.5.7",
-    "parcel-bundler": "^1.9.2"
+    "parcel-bundler": "^1.9.2",
+    "postcss-modules": "^1.1.0"
   }
 }

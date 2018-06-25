@@ -1,12 +1,16 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
-import Button from '@material-ui/core/Button';
+
 import RenderTextField from '../../../shared/input/RenderTextField';
+import AuthFormWrapper from '../../../shared/layout/AuthFormWrapper';
 
 const Register = ({
     handleSubmit,
 }) =>
-    <form onSubmit={handleSubmit}>
+    <AuthFormWrapper
+        handleSubmit={handleSubmit}
+        submitText="Sign Up"
+    >
         <Field
             name='email'
             component={RenderTextField}
@@ -20,10 +24,7 @@ const Register = ({
             margin='normal'
             type="password"
         />
-        <Button type='submit'>
-            Submit
-        </Button>
-    </form>
+    </AuthFormWrapper>
 
 const RegisterForm = reduxForm({
     form: 'register'
