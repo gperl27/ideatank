@@ -1,16 +1,12 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 
-import CreateIdeaForm from './components/CreateIdeaForm'
+import IdeaList from './components/IdeaList';
+import CreateIdeaFormContainer from './components/CreateIdeaFormContainer';
 
 import { parseNameForAvatar } from '../../util';
 
@@ -39,13 +35,13 @@ class Lobby extends React.Component {
         }
     }
 
-    renderPartyMembers(participants) {
+    renderPartyMembers(participants, classes) {
         let size = 3;
         const Participants = participants
             .slice(0, size)
             .map(user => {
                 return (
-                    <Avatar key={user._id}>
+                    <Avatar className={classes.avatar} key={user._id}>
                         {parseNameForAvatar(user.name)}
                     </Avatar>
                 )
@@ -59,10 +55,10 @@ class Lobby extends React.Component {
             null
 
         return (
-            <div>
+            <Fragment>
                 {Participants}
                 {ExtraParticipantCounter}
-            </div>
+            </Fragment>
         )
     }
 
@@ -107,47 +103,29 @@ class Lobby extends React.Component {
     }
 
     render() {
-        const { ideas, signout, authUserIdea, startGame, } = this.props;
+        const { ideas, authUserIdea, startGame, } = this.props;
 
         return (
-            <div>
-                <Button onClick={signout}>Logout</Button>
-                <div>
-                    <Typography variant="title">Have an idea?</Typography>
-                    <CreateIdeaForm
+            <Grid
+                container
+                justify="center"
+                alignItems="center"
+            >
+                <Grid item xs={10}>
+                    <CreateIdeaFormContainer
+                        ctaText="The next greatest thing is..."
                         didAuthUserCreateAnIdea={!!authUserIdea}
                         onSubmit={this.submit}
                     />
-                </div>
-                <div>
-                    <Paper>
-                        <List>
-                            {
-                                ideas && ideas.length === 0 ? <div>No ideas yet!</div>
-                                    :
-                                    ideas && ideas.map((idea, i) => (
-                                        <div key={idea._id}>
-                                            <ListItem>
-                                                <Avatar>{parseNameForAvatar(idea.creator.name)}</Avatar>
-                                                <ListItemText primary={idea.description} />
-                                                {idea.participants && this.renderPartyMembers(idea.participants)}
-                                                {
-                                                    authUserIdea && authUserIdea._id === idea._id ?
-                                                        <Button onClick={() => startGame(authUserIdea)}>
-                                                            Start
-                                                        </Button>
-                                                        : null
-                                                }
-
-                                                {this.renderActionButton(idea)}
-                                            </ListItem>
-                                            {ideas.length - 1 !== i ? <Divider /> : null}
-                                        </div>
-                                    ))}
-                        </List>
-                    </Paper>
-                </div>
-            </div >
+                    <IdeaList
+                        ideas={ideas}
+                        authUserIdea={authUserIdea}
+                        startGame={startGame}
+                        renderPartyMembers={this.renderPartyMembers}
+                        renderActionButton={this.renderActionButton}
+                    />
+                </Grid >
+            </Grid >
         )
     }
 }
