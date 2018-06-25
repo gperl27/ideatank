@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose } from 'redux'
 import { Route, Switch } from 'react-router-dom';
 import Lobby from './Lobby'
 import Game from './Game'
@@ -11,7 +12,12 @@ import UseHeader from '../shared/hoc/UseHeader';
 
 const App = () =>
     <Switch>
-        <Route exact path="/" component={AuthHoc(Lobby)} />
+        <Route exact path="/" component={
+            compose(
+                UseHeader,
+                AuthHoc
+            )(Lobby)
+        } />
         <Route exact path="/game" component={AuthHoc(Game)} />
         <Route exact path="/login" component={UseHeader(Login)} />
         <Route exact path="/register" component={UseHeader(Register)} />

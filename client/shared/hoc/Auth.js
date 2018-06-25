@@ -16,7 +16,7 @@ export default ChildComponent => {
 
         // Our component just got updated
         componentDidUpdate() {
-            this.shouldNavigateAway();
+            // this.shouldNavigateAway();
         }
 
         shouldNavigateAway() {
