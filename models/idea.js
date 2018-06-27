@@ -69,7 +69,7 @@ const IdeaSchema = mongoose.Schema({
         }
     }],
     ratings: [Number],
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true } });
 
 IdeaSchema.virtual('roomUsers').get(function () {
     return [...this.participants, this.creator];
