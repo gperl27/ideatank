@@ -29,6 +29,7 @@ const Whiteboard = ({
     isBrainstorming,
     onSubmit,
     thoughts,
+    userIsTyping,
 }) =>
     <Paper className={classes.paper} >
         <Grid className={classes.root} container>
@@ -41,6 +42,7 @@ const Whiteboard = ({
                     </Grid>
                     <Grid item xs>
                         <CreateThoughtForm
+                            userIsTyping={userIsTyping}
                             isBrainstorming={isBrainstorming}
                             onSubmit={onSubmit}
                         />

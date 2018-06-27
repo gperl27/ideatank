@@ -3,7 +3,7 @@ import { Grid, Avatar } from '@material-ui/core';
 
 import UserAvatar from '../../../shared/UserAvatar';
 
-const Players = ({ players }) =>
+const Players = ({ authUser, players, usersTyping }) =>
     <Grid container>
         {
             players && players.map(player =>
@@ -12,7 +12,14 @@ const Players = ({ players }) =>
                         container
                         direction="column"
                     >
-                        <span>bulb</span>
+                        <span>
+                            {
+                                authUser._id === player._id ? "You"
+                                    :
+
+                                    usersTyping.includes(player._id) ? 'istyping' : 'not typing'
+                            }
+                        </span>
                         <UserAvatar name={player.name} />
                     </Grid>
                 </Grid>

@@ -162,7 +162,13 @@ module.exports = io => {
             io.in(idea._id).emit('update game', updatedIdea);
         })
 
-        // todo: is typing
+        socket.on('is typing', ({ ideaId, uid }) => {
+            socket.to(ideaId).emit('is typing', { uid });
+        })
+
+        socket.on('done typing', ({ ideaId, uid }) => {
+            socket.to(ideaId).emit('done typing', { uid });
+        })
 
         console.log('connected');
     });

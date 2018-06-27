@@ -15,6 +15,7 @@ import { isCreator, isBrainstorming, activeThoughtsFromKey } from './selector';
 import {
     startPhase,
     createThought,
+    userIsTyping,
 } from '../../modules/game'
 import Whiteboard from './components/Whiteboard';
 
@@ -36,12 +37,13 @@ class Game extends React.Component {
 
     render() {
         const {
-            startPhase,
             game,
             thoughts,
             timer,
-            isCreator,
-            isBrainstorming
+            userIsTyping,
+            isBrainstorming,
+            usersTyping,
+            authUser,
         } = this.props;
 
         return (
@@ -52,10 +54,15 @@ class Game extends React.Component {
                             <GameDetails game={game} startButton={this.renderStartButton()} />
                         </Grid>
                         <Grid item>
-                            <Players players={game && game.roomUsers} />
+                            <Players
+                                authUser={authUser}
+                                players={game && game.roomUsers}
+                                usersTyping={usersTyping}
+                            />
                         </Grid>
                         <Grid item>
                             <Whiteboard
+                                userIsTyping={userIsTyping}
                                 timer={timer}
                                 isBrainstorming={isBrainstorming}
                                 onSubmit={this.submit}
@@ -70,8 +77,10 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = state => ({
+    authUser: state.auth.authUser,
     game: state.game.activeGame,
     timer: state.game.timer,
+    usersTyping: state.game.usersTyping,
     thoughts: activeThoughtsFromKey(state),
     isCreator: isCreator(state),
     isBrainstorming: isBrainstorming(state),
@@ -80,6 +89,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     startPhase,
     createThought,
+    userIsTyping,
     redirectToLobby: () => push('/')
 }, dispatch)
 

@@ -7,9 +7,11 @@ import RenderTextField from '../../../shared/input/RenderTextField';
 const CreateThought = ({
     handleSubmit,
     isBrainstorming,
+    userIsTyping,
 }) =>
     <form onSubmit={handleSubmit}>
         <Field
+            onChange={userIsTyping}
             disabled={!isBrainstorming}
             name='text'
             component={RenderTextField}

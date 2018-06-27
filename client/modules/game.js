@@ -5,10 +5,12 @@ import store from '../store';
 
 export const FETCH_GAME = 'game/FETCH_GAME';
 export const UPDATE_TIMER = 'game/UPDATE_TIMER';
+export const TYPING = 'game/TYPING';
 
 const initialState = {
     activeGame: null,
     timer: 'n/a',
+    usersTyping: [],
 };
 
 export default (state = initialState, action) => {
@@ -23,6 +25,12 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 timer: action.payload
+            };
+
+        case TYPING:
+            return {
+                ...state,
+                usersTyping: action.payload
             };
 
 
@@ -46,12 +54,36 @@ export const startPhase = () => (dispatch, getState) => {
     socket.emit('phase start', { idea: getState().game.activeGame });
 }
 
+export const userIsTyping = e => (dispatch, getState) => {
+    const ideaId = getState().game.activeGame._id
+    const uid = getState().auth.authUser._id
+
+    if (e.target.value.length > 0) {
+        socket.emit('is typing', {
+            ideaId,
+            uid,
+        });
+    } else {
+        socket.emit('done typing', {
+            ideaId,
+            uid,
+        });
+    }
+}
+
 export const createThought = ({ text }) => (dispatch, getState) => {
+    const idea = getState().game.activeGame;
+    const uid = getState().auth.authUser._id
 
     socket.emit('add thought', {
-        idea: getState().game.activeGame,
-        uid: getState().auth.authUser._id,
+        idea,
+        uid,
         text,
+    });
+
+    socket.emit('done typing', {
+        ideaId: idea._id,
+        uid
     });
 
     dispatch(reset('createThought'))
@@ -88,5 +120,20 @@ export const wsListeners = socket => {
     socket.on('end game', data => {
         store.dispatch({ type: UPDATE_TIMER, payload: 'n/a' })
         store.dispatch(push('/results'))
+    })
+
+    socket.on('is typing', ({ uid }) => {
+        const usersTyping = store.getState().game.usersTyping;
+
+        // dont do anything if user was already typing
+        if (usersTyping.includes(uid)) { return }
+
+        store.dispatch({ type: TYPING, payload: usersTyping.concat(uid) })
+    })
+
+    socket.on('done typing', ({ uid }) => {
+        const usersTyping = store.getState().game.usersTyping;
+
+        store.dispatch({ type: TYPING, payload: usersTyping.filter(u => u !== uid) })
     })
 }
