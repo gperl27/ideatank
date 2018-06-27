@@ -20,12 +20,11 @@ const styles = {
     },
     thoughtText: {
         flexGrow: 2,
-    }
+    },
 };
 
 const Whiteboard = ({
     classes,
-    timer,
     isBrainstorming,
     onSubmit,
     thoughts,
@@ -36,11 +35,6 @@ const Whiteboard = ({
             <Grid item sm={12} md={4}>
                 <Grid container direction="column">
                     <Grid item xs>
-                        <Typography variant="body1">
-                            Time left: {timer}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs>
                         <CreateThoughtForm
                             userIsTyping={userIsTyping}
                             isBrainstorming={isBrainstorming}
@@ -49,12 +43,12 @@ const Whiteboard = ({
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item sm={12} md={8} container direction="column">
+            <Grid item sm={12} md={8} container>
                 {
                     thoughts && thoughts.map(thought =>
-                        <Grid className={classes.thought} item xs key={thought._id}>
+                        <Grid className={classes.thought} item xs={4} key={thought._id}>
                             <Grid container alignItems="center" wrap="nowrap">
-                                <UserAvatar classes={classes.avatar} name={thought.user.name} />
+                                <UserAvatar className={classes.avatar} name={thought.user.name} />
                                 <Typography className={classes.thoughtText} variant="body1">{thought.text}</Typography>
                             </Grid>
                         </Grid>

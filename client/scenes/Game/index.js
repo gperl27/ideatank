@@ -2,11 +2,9 @@ import React from 'react';
 import { push } from 'react-router-redux';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
-import CreateThoughtForm from './components/CreateThoughtForm';
 import GameDetails from './components/GameDetails';
 import Players from './components/Players';
 
@@ -18,6 +16,13 @@ import {
     userIsTyping,
 } from '../../modules/game'
 import Whiteboard from './components/Whiteboard';
+import { withStyles } from '@material-ui/core';
+
+const styles = {
+    root: {
+        marginTop: 50
+    },
+};
 
 class Game extends React.Component {
     componentDidMount() {
@@ -32,7 +37,9 @@ class Game extends React.Component {
     renderStartButton = () => {
         const { isBrainstorming, isCreator, startPhase } = this.props;
 
-        return !isBrainstorming && isCreator ? <Button onClick={startPhase}>Start phase</Button> : null
+        return isCreator ?
+            <Button disabled={isBrainstorming} onClick={startPhase}>Start phase</Button>
+            : null
     }
 
     render() {
@@ -44,14 +51,20 @@ class Game extends React.Component {
             isBrainstorming,
             usersTyping,
             authUser,
+            classes,
         } = this.props;
 
         return (
-            <Grid container justify="center" alignItems="center">
+            <Grid className={classes.root} container justify="center" alignItems="center">
                 <Grid item xs={8} >
-                    <Grid container direction="column">
+                    <Grid container direction="column" spacing={40}>
                         <Grid item>
-                            <GameDetails game={game} startButton={this.renderStartButton()} />
+                            <GameDetails
+                                isBrainstorming={isBrainstorming}
+                                timer={timer}
+                                game={game}
+                                startButton={this.renderStartButton()}
+                            />
                         </Grid>
                         <Grid item>
                             <Players
@@ -63,7 +76,6 @@ class Game extends React.Component {
                         <Grid item>
                             <Whiteboard
                                 userIsTyping={userIsTyping}
-                                timer={timer}
                                 isBrainstorming={isBrainstorming}
                                 onSubmit={this.submit}
                                 thoughts={thoughts}
@@ -94,5 +106,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch)
 
 export default compose(
+    withStyles(styles),
     connect(mapStateToProps, mapDispatchToProps),
 )(Game);
