@@ -124,19 +124,12 @@ module.exports = io => {
 
                     let updatedIdea;
                     if (phase.length > 0) {
-                        updatedIdea = await Idea.findByIdAndUpdate(idea._id, { phase: phase[0] }, { new: true })
-                            .populate('creator')
-                            .populate('participants')
-                            .populate('thoughts')
-
+                        updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { phase: phase[0] }, { new: true })
 
                         io.in(idea._id).emit('end phase');
                     } else {
                         // game over
-                        updatedIdea = await Idea.findByIdAndUpdate(idea._id, { isCompleted: true }, { new: true })
-                            .populate('creator')
-                            .populate('participants')
-                            .populate('thoughts')
+                        updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { isCompleted: true }, { new: true })
 
                         io.in(idea._id).emit('end game');
                     }
@@ -164,10 +157,7 @@ module.exports = io => {
 
         socket.on('add thought', async ({ idea, uid, text }) => {
             const newThought = await Thought.create({ text, type: idea.phase.thoughtType, user: uid })
-            const updatedIdea = await Idea.findByIdAndUpdate(idea._id, { $push: { thoughts: newThought } }, { new: true })
-                .populate('creator')
-                .populate('participants')
-                .populate('thoughts')
+            const updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { $push: { thoughts: newThought } }, { new: true })
 
             io.in(idea._id).emit('update game', updatedIdea);
         })

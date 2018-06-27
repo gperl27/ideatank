@@ -56,7 +56,13 @@ UserSchema.virtual('currentIdea').get(function () {
         .sort({ createdAt: 'descending' })
         .populate('creator')
         .populate('participants')
-        .populate('thoughts')
+        .populate({
+            path: 'thoughts',
+            populate: {
+                path: 'user',
+                model: 'User'
+            }
+        })
         .exec()
 });
 

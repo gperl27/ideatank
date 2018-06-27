@@ -75,11 +75,24 @@ IdeaSchema.virtual('roomUsers').get(function () {
     return [...this.participants, this.creator];
 });
 
-IdeaSchema.statics.findIdeasInLobby = function (x, y) {
+IdeaSchema.statics.findIdeasInLobby = function () {
     return this.find({ isCompleted: false, 'phase.key': 'groupFinding' })
         .sort({ createdAt: 'descending' })
         .populate('creator')
         .populate('participants')
+};
+
+IdeaSchema.statics.updateIdeaAndReturnRelations = function (idea, update, options) {
+    return this.findByIdAndUpdate(idea._id, update, options)
+        .populate('creator')
+        .populate('participants')
+        .populate({
+            path: 'thoughts',
+            populate: {
+                path: 'user',
+                model: 'User'
+            }
+        })
 };
 
 

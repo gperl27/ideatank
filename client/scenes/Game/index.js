@@ -46,24 +46,24 @@ class Game extends React.Component {
 
         return (
             <Grid container justify="center" alignItems="center">
-                <Grid item xs={8}>
-                    <GameDetails game={game} startButton={this.renderStartButton()} />
-                    <Players players={game && game.roomUsers} />
-                    <Whiteboard />
+                <Grid item xs={8} >
+                    <Grid container direction="column">
+                        <Grid item>
+                            <GameDetails game={game} startButton={this.renderStartButton()} />
+                        </Grid>
+                        <Grid item>
+                            <Players players={game && game.roomUsers} />
+                        </Grid>
+                        <Grid item>
+                            <Whiteboard
+                                timer={timer}
+                                isBrainstorming={isBrainstorming}
+                                onSubmit={this.submit}
+                                thoughts={thoughts}
+                            />
+                        </Grid>
+                    </Grid>
                 </Grid>
-
-                {/* <div>
-                    <Typography variant="title">Time left: {timer}</Typography>
-                </div> */}
-                {/* {thoughts && thoughts.length > 0 ?
-                    thoughts.map(thought => <div key={thought._id}>{thought.text}</div>)
-                    :
-                    <Typography variant="title">Submit a thought to get started!</Typography>
-                } */}
-                {/* <CreateThoughtForm
-                    isBrainstorming={isBrainstorming}
-                    onSubmit={this.submit}
-                /> */}
             </Grid>
         )
     }

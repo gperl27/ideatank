@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Grid, Avatar } from '@material-ui/core';
 
-import { parseNameForAvatar } from '../../../util';
+import UserAvatar from '../../../shared/UserAvatar';
 
 const Players = ({ players }) =>
     <Grid container>
@@ -13,7 +13,7 @@ const Players = ({ players }) =>
                         direction="column"
                     >
                         <span>bulb</span>
-                        <Avatar>{parseNameForAvatar(player.name)}</Avatar>
+                        <UserAvatar name={player.name} />
                     </Grid>
                 </Grid>
             )

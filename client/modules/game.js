@@ -31,11 +31,6 @@ export default (state = initialState, action) => {
     }
 };
 
-
-//- socket.on('end game', data => {
-//-   console.log(data);
-//- })
-
 //- socket.emit('intermission');
 
 //- socket.on('intermission timer', data => {

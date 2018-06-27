@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import IdeaList from './components/IdeaList';
 import CreateIdeaFormContainer from './components/CreateIdeaFormContainer';
 
-import { parseNameForAvatar } from '../../util';
+import UserAvatar from '../../shared/UserAvatar';
 
 import {
     fetchIdeas,
@@ -41,9 +41,11 @@ class Lobby extends React.Component {
             .slice(0, size)
             .map(user => {
                 return (
-                    <Avatar className={classes.avatar} key={user._id}>
-                        {parseNameForAvatar(user.name)}
-                    </Avatar>
+                    <UserAvatar
+                        key={user._id}
+                        className={classes.avatar}
+                        name={user.name}
+                    />
                 )
             })
 

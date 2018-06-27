@@ -1,14 +1,48 @@
 import React from 'react';
-import { Paper, Grid } from '@material-ui/core';
+import { Paper, Grid, Avatar, Typography } from '@material-ui/core';
 
-const Whiteboard = () =>
+import CreateThoughtForm from './CreateThoughtForm';
+import UserAvatar from '../../../shared/UserAvatar';
+
+const Whiteboard = ({
+    timer,
+    isBrainstorming,
+    onSubmit,
+    thoughts,
+}) =>
     <Paper>
         <Grid container>
-            <Grid item xs={4}>
-                Timer and form hrer
+            <Grid item sm={12} md={4}>
+                <Grid container direction="column">
+                    <Grid item xs>
+                        Time left: {timer}
+                    </Grid>
+                    <Grid item xs>
+                        <CreateThoughtForm
+                            isBrainstorming={isBrainstorming}
+                            onSubmit={onSubmit}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid item xs={8}>
-                thoughts here
+            <Grid item sm={12} md={8}>
+                <Grid container>
+                    {
+                        thoughts && thoughts.map(thought =>
+                            <Grid item xs key={thought._id}>
+                                <Grid container>
+                                    <Grid item xs>
+                                        {console.log(thought.user.name, thought)}
+                                        <UserAvatar name={thought.user.name} />
+                                    </Grid>
+                                    <Grid item xs>
+                                        <Typography variant="body1">{thought.text}</Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        )
+                    }
+                </Grid>
             </Grid>
         </Grid>
     </Paper>
