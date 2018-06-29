@@ -16,7 +16,7 @@ import {
     userIsTyping,
 } from '../../modules/game'
 import Whiteboard from './components/Whiteboard';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Typography } from '@material-ui/core';
 
 const styles = {
     root: {
@@ -74,6 +74,11 @@ class Game extends React.Component {
                             />
                         </Grid>
                         <Grid item>
+                            {game &&
+                                <Typography gutterBottom variant="display1">
+                                    {game.phase.instructions}
+                                </Typography>
+                            }
                             <Whiteboard
                                 userIsTyping={userIsTyping}
                                 isBrainstorming={isBrainstorming}
