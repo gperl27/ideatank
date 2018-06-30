@@ -1,15 +1,6 @@
 const mongoose = require('mongoose');
 
 const ThoughtSchema = mongoose.Schema({
-    type: {
-        type: 'String',
-        enum: [
-            'pro',
-            'con',
-            'inspiration'
-        ],
-        required: true
-    },
     text: {
         type: String,
         required: true

@@ -15,6 +15,9 @@ import {
     createThought,
     userIsTyping,
 } from '../../modules/game'
+
+import { redirectToLobby } from '../../modules/nav';
+
 import Whiteboard from './components/Whiteboard';
 import { withStyles, Typography } from '@material-ui/core';
 
@@ -107,7 +110,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     startPhase,
     createThought,
     userIsTyping,
-    redirectToLobby: () => push('/')
+    redirectToLobby
 }, dispatch)
 
 export default compose(

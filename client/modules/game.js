@@ -33,7 +33,6 @@ export default (state = initialState, action) => {
                 usersTyping: action.payload
             };
 
-
         default:
             return state;
     }
@@ -113,12 +112,12 @@ export const wsListeners = socket => {
         store.dispatch({ type: FETCH_GAME, payload: data })
     })
 
-    socket.on('end phase', data => {
+    socket.on('end phase', _ => {
         store.dispatch({ type: UPDATE_TIMER, payload: 'Time is up!' })
     })
 
     socket.on('end game', data => {
-        store.dispatch({ type: UPDATE_TIMER, payload: 'n/a' })
+        store.dispatch({ type: FETCH_GAME, payload: data })
         store.dispatch(push('/results'))
     })
 

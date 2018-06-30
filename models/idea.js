@@ -9,46 +9,10 @@ const IdeaSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    phase: { // may want to consider using subdocuments in the future for dynamacy
-        type: Object,
-        enum: [
-            {
-                order: 0,
-                key: 'groupFinding',
-                thoughtType: null,
-                length: null,
-                instructions: null
-            },
-            {
-                order: 1,
-                key: 'problemsBeingSolved',
-                thoughtType: 'pro',
-                length: 100000, // 120000
-                instructions: 'Solve Problems Here'
-            },
-            {
-                order: 2,
-                key: 'obstacles',
-                thoughtType: 'con',
-                length: 100000, //120000
-                instructions: 'Solve Obstacles Here'
-            },
-            {
-                order: 3,
-                key: 'inspirations',
-                thoughtType: 'inspiration',
-                length: 100000, //60000
-                instructions: 'Solve Inspirtations Here'
-            },
-            // { desc: 'feasibility', length: 0.20 },
-        ],
-        default: {
-            order: 0,
-            key: 'groupFinding',
-            length: null,
-            instructions: null
-        },
-    },
+    phases: [{ // using save hook to create default phases
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Phase',
+    }],
     creator: { // validate required
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -58,25 +22,58 @@ const IdeaSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    thoughts: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Thought',
-        validate: {
-            validator: function (v) {
-                return this.roomUsers.filter(u => u._id === v.user._id)
-            },
-            message: 'Only the creator or participant can add a thought to this idea.'
-        }
-    }],
     ratings: [Number],
 }, { timestamps: true, toJSON: { virtuals: true } });
+
+const defaultPhases = [
+    {
+        active: true,
+        order: 0,
+    },
+    {
+        order: 1,
+        length: 100000, // 120000
+        instructions: 'Solve Problems Here'
+    },
+    {
+        order: 2,
+        length: 100000, //120000
+        instructions: 'Solve Obstacles Here'
+    },
+    {
+        order: 3,
+        length: 100000, //60000
+        instructions: 'Solve Inspirtations Here'
+    },
+]
+
+// seed the idea with the default game phases
+IdeaSchema.pre('save', function (next) {
+    const idea = this;
+    const Phase = mongoose.model('Phase');
+    const dbPromises = [];
+
+    // save each phase and add to idea's phases
+    defaultPhases.forEach(function (phase) {
+        const newPhase = new Phase(phase);
+        idea.phases.push(newPhase);
+        dbPromises.push(newPhase.save())
+    });
+
+    // resolve every async write
+    Promise.all(dbPromises)
+        .then(vals => {
+            console.log(vals);
+            next();
+        })
+});
 
 IdeaSchema.virtual('roomUsers').get(function () {
     return [...this.participants, this.creator];
 });
 
 IdeaSchema.statics.findIdeasInLobby = function () {
-    return this.find({ isCompleted: false, 'phase.key': 'groupFinding' })
+    return this.find({ isCompleted: false, 'phases.active': true })
         .sort({ createdAt: 'descending' })
         .populate('creator')
         .populate('participants')
@@ -87,10 +84,13 @@ IdeaSchema.statics.updateIdeaAndReturnRelations = function (idea, update, option
         .populate('creator')
         .populate('participants')
         .populate({
-            path: 'thoughts',
+            path: 'phases',
             populate: {
-                path: 'user',
-                model: 'User'
+                path: 'thoughts',
+                populate: {
+                    path: 'user',
+                    model: 'User'
+                }
             }
         })
 };

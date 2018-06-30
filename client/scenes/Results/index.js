@@ -1,4 +1,6 @@
 import React from 'react';
+import { compose, bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Grid, withStyles } from '@material-ui/core';
 
 import Header from './components/Header';
@@ -7,6 +9,8 @@ import Actions from './components/Actions';
 import Participants from './components/Participants';
 import Thoughts from './components/Thoughts';
 
+import { redirectToLobby } from '../../modules/nav';
+
 const styles = {
     root: {
         marginTop: 50,
@@ -14,9 +18,15 @@ const styles = {
 };
 
 class Results extends React.Component {
-    render() {
-        const { classes } = this.props;
+    componentDidMount() {
+        const { game, redirectToLobby } = this.props;
 
+        if (!game || !game.isCompleted) { redirectToLobby() }
+    }
+
+    render() {
+        const { classes, game } = this.props;
+        console.log(game);
         return (
             <Grid
                 className={classes.root}
@@ -35,7 +45,7 @@ class Results extends React.Component {
                             <Header />
                         </Grid>
                         <Grid item>
-                            <GameDetails />
+                            <GameDetails game={game} />
                         </Grid>
                         <Grid item>
                             <Thoughts />
@@ -53,4 +63,15 @@ class Results extends React.Component {
     }
 }
 
-export default withStyles(styles)(Results);
+const mapStateToProps = state => ({
+    game: state.game.activeGame,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    redirectToLobby,
+}, dispatch)
+
+export default compose(
+    withStyles(styles),
+    connect(mapStateToProps, mapDispatchToProps),
+)(Results);

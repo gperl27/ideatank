@@ -127,13 +127,19 @@ module.exports = io => {
                         updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { phase: phase[0] }, { new: true })
 
                         io.in(idea._id).emit('end phase');
+                        io.in(idea._id).emit('update game', updatedIdea);
                     } else {
                         // game over
+                        // send players to results page and close out channel
                         updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { isCompleted: true }, { new: true })
 
-                        io.in(idea._id).emit('end game');
+                        io.in(idea._id).emit('end game', updatedIdea);
+                        
+                        io.in(idea._id).clients((error, clients) => {
+                            if (error) throw error;
+                            clients.forEach(client => io.sockets.connected[client].leave(idea._id))
+                        })
                     }
-                    io.in(idea._id).emit('update game', updatedIdea);
                 }
             }, oneSecond);
 

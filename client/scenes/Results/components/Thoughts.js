@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Paper } from '@material-ui/core';
 
-const Thoughts = () =>
+const Thoughts = ({ players }) =>
     <div>
         <Typography variant="display1" gutterBottom>
             Thoughts

@@ -1,9 +1,11 @@
 import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, List, ListItem, ListItemText, } from '@material-ui/core';
+
+import UserAvatar from '../../../shared/UserAvatar';
 
 const RenderListItem = ({ label, text, children }) =>
     <ListItem>
-        <ListItemText primary={label} secondary={text} />
+        <ListItemText primary={label} secondary={text && text} />
         {children}
     </ListItem>
 
@@ -19,14 +21,20 @@ const GameDetails = ({ game }) =>
                 label="Creator"
                 text={game.creator.name}
             >
-                avatar here
+                <UserAvatar name={game.creator.name} />
             </RenderListItem>
-            <RenderListItem
-                label="Participants"
-                text={game.creator.name}
-            >
-                avatars here
-            </RenderListItem>
+            {
+                game.participants &&
+                <RenderListItem
+                    label="Participants"
+                >
+                    {
+                        game.participants.map(participant =>
+                            <UserAvatar name={participant.name} />
+                        )
+                    }
+                </RenderListItem>
+            }
             <RenderListItem
                 label="Total thoughts"
                 text={game.thoughts.length}

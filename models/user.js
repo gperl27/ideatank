@@ -57,10 +57,13 @@ UserSchema.virtual('currentIdea').get(function () {
         .populate('creator')
         .populate('participants')
         .populate({
-            path: 'thoughts',
+            path: 'phases',
             populate: {
-                path: 'user',
-                model: 'User'
+                path: 'thoughts',
+                populate: {
+                    path: 'user',
+                    model: 'User'
+                }
             }
         })
         .exec()
