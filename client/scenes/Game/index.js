@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import GameDetails from './components/GameDetails';
 import Players from './components/Players';
 
-import { isCreator, isBrainstorming, activeThoughtsFromKey } from './selector';
+import { isCreator, isBrainstorming, activePhase } from './selector';
 
 import {
     startPhase,
@@ -48,7 +48,7 @@ class Game extends React.Component {
     render() {
         const {
             game,
-            thoughts,
+            activePhase,
             timer,
             userIsTyping,
             isBrainstorming,
@@ -65,7 +65,7 @@ class Game extends React.Component {
                             <GameDetails
                                 isBrainstorming={isBrainstorming}
                                 timer={timer}
-                                game={game}
+                                activePhase={activePhase}
                                 startButton={this.renderStartButton()}
                             />
                         </Grid>
@@ -77,16 +77,16 @@ class Game extends React.Component {
                             />
                         </Grid>
                         <Grid item>
-                            {game &&
+                            {activePhase &&
                                 <Typography gutterBottom variant="display1">
-                                    {game.phase.instructions}
+                                    {activePhase.instructions}
                                 </Typography>
                             }
                             <Whiteboard
                                 userIsTyping={userIsTyping}
                                 isBrainstorming={isBrainstorming}
                                 onSubmit={this.submit}
-                                thoughts={thoughts}
+                                activePhase={activePhase}
                             />
                         </Grid>
                     </Grid>
@@ -101,7 +101,7 @@ const mapStateToProps = state => ({
     game: state.game.activeGame,
     timer: state.game.timer,
     usersTyping: state.game.usersTyping,
-    thoughts: activeThoughtsFromKey(state),
+    activePhase: activePhase(state),
     isCreator: isCreator(state),
     isBrainstorming: isBrainstorming(state),
 });

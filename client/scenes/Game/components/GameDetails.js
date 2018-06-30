@@ -6,16 +6,16 @@ import { msToMinutes } from '../../../util';
 
 const GameDetails = ({
     isBrainstorming,
-    game,
     startButton,
     timer,
+    activePhase,
 }) =>
-    game &&
+    activePhase &&
     <Grid container justify="space-around" alignItems="flex-end">
         <Grid item xs>
-            <Typography gutterBottom variant='display2'>Round {game.phase.order}</Typography>
-            <Typography gutterBottom variant='display1'>{game.description}</Typography>
-            <Typography variant='title'>Round Length: {msToMinutes(game.phase.length)}</Typography>
+            <Typography gutterBottom variant='display2'>Round {activePhase.order}</Typography>
+            <Typography gutterBottom variant='display1'>{activePhase.description}</Typography>
+            <Typography variant='title'>Round Length: {msToMinutes(activePhase.length)}</Typography>
         </Grid>
         <Grid item xs>
             <Grid container direction="column" alignItems="center" spacing={16}>

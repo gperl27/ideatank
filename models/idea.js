@@ -79,8 +79,8 @@ IdeaSchema.statics.findIdeasInLobby = function () {
         .populate('participants')
 };
 
-IdeaSchema.statics.updateIdeaAndReturnRelations = function (idea, update, options) {
-    return this.findByIdAndUpdate(idea._id, update, options)
+IdeaSchema.statics.findByIdWithRelations = function (idea) {
+    return this.findById(idea._id)
         .populate('creator')
         .populate('participants')
         .populate({
@@ -92,6 +92,40 @@ IdeaSchema.statics.updateIdeaAndReturnRelations = function (idea, update, option
                     model: 'User'
                 }
             }
+        })
+};
+
+IdeaSchema.statics.nextPhase = function (idea) {
+    const Phase = mongoose.model('Phase');
+    const currentPhase = idea.phases.find(phase => phase.active)
+    const nextPhase = idea.phases.find(phase => phase.order === currentPhase.order + 1)
+
+    let updates = [Phase.findByIdAndUpdate(currentPhase._id, { active: false })];
+
+    // if there's no next phase
+    // mark as complete
+    // else mark the next phase as active
+    if (!nextPhase) {
+        updates.push(this.findByIdAndUpdate(idea._id, { isCompleted: true }))
+    } else {
+        updates.push(Phase.findByIdAndUpdate(nextPhase._id, { active: true }))
+    }
+
+    return Promise.all(updates)
+        .then(function (_) {
+            return this.findById(idea._id)
+                .populate('creator')
+                .populate('participants')
+                .populate({
+                    path: 'phases',
+                    populate: {
+                        path: 'thoughts',
+                        populate: {
+                            path: 'user',
+                            model: 'User'
+                        }
+                    }
+                })
         })
 };
 

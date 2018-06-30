@@ -78,6 +78,8 @@ module.exports = io => {
                     $pull: { ideas: idea._id }
                 })
 
+                // TODO check if thoughts, phases, etc get removed as well
+                // may need to add a hook here
                 const removeIdea = Idea.findByIdAndRemove(idea._id);
 
                 Promise.all([removeIdeaFromUser, removeIdea])
@@ -88,14 +90,8 @@ module.exports = io => {
             });
         });
 
-        socket.on('start game', async data => {
-            const firstPhase = Idea.schema.paths.phase.options.enum[1];
-            const idea = await Idea.findByIdAndUpdate(data.idea._id, {
-                phase: firstPhase
-            }, { new: true })
-                .populate('creator')
-                .populate('participants')
-                .populate('thoughts')
+        socket.on('start game', async idea => {
+            const idea = await Idea.nextPhase(idea)
 
             io.in(idea._id).emit('game start', idea);
 
@@ -119,22 +115,11 @@ module.exports = io => {
                     clearInterval(timer);
 
                     // go to next phase
-                    const ideaPhaseSchema = Idea.schema.paths.phase.options.enum;
-                    const phase = ideaPhaseSchema.filter(phase => phase.order === idea.phase.order + 1)
+                    let updatedIdea = await Idea.nextPhase(idea);
+                    io.in(idea._id).emit('end phase', updatedIdea);
+                    io.in(idea._id).emit('update game', updatedIdea);
 
-                    let updatedIdea;
-                    if (phase.length > 0) {
-                        updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { phase: phase[0] }, { new: true })
-
-                        io.in(idea._id).emit('end phase');
-                        io.in(idea._id).emit('update game', updatedIdea);
-                    } else {
-                        // game over
-                        // send players to results page and close out channel
-                        updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { isCompleted: true }, { new: true })
-
-                        io.in(idea._id).emit('end game', updatedIdea);
-                        
+                    if (updatedIdea.isCompleted) {
                         io.in(idea._id).clients((error, clients) => {
                             if (error) throw error;
                             clients.forEach(client => io.sockets.connected[client].leave(idea._id))
@@ -161,9 +146,10 @@ module.exports = io => {
             }, oneSecond)
         })
 
-        socket.on('add thought', async ({ idea, uid, text }) => {
-            const newThought = await Thought.create({ text, type: idea.phase.thoughtType, user: uid })
-            const updatedIdea = await Idea.updateIdeaAndReturnRelations(idea, { $push: { thoughts: newThought } }, { new: true })
+        socket.on('add thought', async ({ idea, phase, uid, text }) => {
+            const newThought = await Thought.create({ text, user: uid })
+            await Phase.findById(phase._id, { $push: { thoughts: newThought } })
+            const updatedIdea = await Idea.findByIdWithRelations(idea);
 
             io.in(idea._id).emit('update game', updatedIdea);
         })

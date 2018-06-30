@@ -7,6 +7,8 @@ export const FETCH_GAME = 'game/FETCH_GAME';
 export const UPDATE_TIMER = 'game/UPDATE_TIMER';
 export const TYPING = 'game/TYPING';
 
+import { activePhase } from '../scenes/Game/selector'
+
 const initialState = {
     activeGame: null,
     timer: 'n/a',
@@ -73,9 +75,11 @@ export const userIsTyping = e => (dispatch, getState) => {
 export const createThought = ({ text }) => (dispatch, getState) => {
     const idea = getState().game.activeGame;
     const uid = getState().auth.authUser._id
+    const phase = activePhase(getState())
 
     socket.emit('add thought', {
         idea,
+        phase,
         uid,
         text,
     });
@@ -89,17 +93,22 @@ export const createThought = ({ text }) => (dispatch, getState) => {
 }
 
 // View Logic
-export const delegatePhase = idea => dispatch => {
-    switch (idea.phase.key) {
-        case 'problemsBeingSolved':
-        case 'obstacles':
-        case 'inspirations':
-            dispatch({ type: FETCH_GAME, payload: idea })
-            dispatch(push('/game'));
-            break;
-
-        default: dispatch(push('/'))
+export const delegatePhase = idea => (dispatch, getState) => {
+    if (idea.isCompleted) {
+        dispatch(push('/results'))
+        return
     }
+
+    // 0 is a special order
+    // idea is in group finding (lobby)
+    const currentPhase = activePhase(getState())
+    if (currentPhase.order === 0) {
+        dispatch(push('/'))
+        return
+    }
+
+    // default to game for now
+    dispatch(push('/game'))
 };
 
 // websocket listeners
@@ -112,13 +121,9 @@ export const wsListeners = socket => {
         store.dispatch({ type: FETCH_GAME, payload: data })
     })
 
-    socket.on('end phase', _ => {
+    socket.on('end phase', idea => {
         store.dispatch({ type: UPDATE_TIMER, payload: 'Time is up!' })
-    })
-
-    socket.on('end game', data => {
-        store.dispatch({ type: FETCH_GAME, payload: data })
-        store.dispatch(push('/results'))
+        store.dispatch(delegatePhase(idea))
     })
 
     socket.on('is typing', ({ uid }) => {

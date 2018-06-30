@@ -15,7 +15,7 @@ export const isBrainstorming = createSelector(
     timer => !isNaN(timer)
 )
 
-export const activeThoughtsFromKey = createSelector(
+export const activePhase = createSelector(
     idea,
-    idea => idea && idea.thoughts.filter(thought => thought.type === idea.phase.thoughtType)
+    idea => idea && idea.phase.find(phase => phase.active)
 )
