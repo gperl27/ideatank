@@ -32,17 +32,17 @@ const defaultPhases = [
     },
     {
         order: 1,
-        length: 100000, // 120000
+        length: 2000, // 120000
         instructions: 'Solve Problems Here'
     },
     {
         order: 2,
-        length: 100000, //120000
+        length: 2000, //120000
         instructions: 'Solve Obstacles Here'
     },
     {
         order: 3,
-        length: 100000, //60000
+        length: 2000, //60000
         instructions: 'Solve Inspirtations Here'
     },
 ]
@@ -131,7 +131,7 @@ IdeaSchema.statics.findByIdWithRelations = function (idea) {
         })
 };
 
-IdeaSchema.statics.nextPhase = async function ({ idea }) {
+IdeaSchema.statics.nextPhase = async function (idea) {
     const currentIdea = await this.findById(idea._id).populate('phases')
     const Phase = mongoose.model('Phase');
     const currentPhase = currentIdea.phases.find(phase => phase.active)

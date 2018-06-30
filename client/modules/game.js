@@ -52,7 +52,10 @@ export default (state = initialState, action) => {
 
 // Game Actions
 export const startPhase = () => (dispatch, getState) => {
-    socket.emit('phase start', { idea: getState().game.activeGame });
+    socket.emit('phase start', {
+        idea: getState().game.activeGame,
+        phase: activePhase(getState()),
+    });
 }
 
 export const userIsTyping = e => (dispatch, getState) => {
@@ -123,8 +126,8 @@ export const wsListeners = socket => {
         store.dispatch({ type: FETCH_GAME, payload: data })
     })
 
-    socket.on('end phase', idea => {
-        store.dispatch({ type: UPDATE_TIMER, payload: 'Time is up!' })
+    socket.on('phase change', idea => {
+        store.dispatch({ type: UPDATE_TIMER, payload: 'n/a' })
         store.dispatch(delegatePhase())
     })
 
