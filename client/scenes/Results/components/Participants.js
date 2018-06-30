@@ -1,44 +1,41 @@
 import React from 'react';
-import { Card, CardHeader, Grid, CardContent, List, ListItem, Typography, Avatar } from '@material-ui/core';
+import { Card, CardHeader, Grid, CardContent, List, ListItem, Typography, ListItemText } from '@material-ui/core';
 
-const Participants = () =>
+import UserAvatar from '../../../shared/UserAvatar'
+
+const Participants = ({ participants }) =>
     <div>
         <Typography variant="display1" gutterBottom>
             Participants
         </Typography>
         <Grid container spacing={24}>
             {
-                [0, 1, 2].map(v =>
-                    <Grid item xs={12} sm={4}>
-                        <Card key={v}>
-                            <Grid container>
-                                <Grid item xs>
-                                    <CardHeader
-                                        avatar={<Avatar>R</Avatar>}
-                                    />
-                                </Grid>
-                                <Grid item xs>
-                                    <CardContent>
-                                        <Typography variant="subheading">Total Count:</Typography>
-                                        <List>
+                participants.map(({ user, userPhaseData }) =>
+                    <Grid key={user._id} item xs={12} sm={12} md={4}>
+                        <Card>
+                            <CardHeader
+                                avatar={<UserAvatar name={user.name} />}
+                            />
+                            <CardContent>
+                                <Typography variant="subheading">Total Contributions:</Typography>
+                                {
+                                    userPhaseData.map(({ phase, userThoughts }) =>
+                                        <List key={phase._id}>
                                             <ListItem>
-                                                Round 1: 34
-                                    </ListItem>
-                                            <ListItem>
-                                                Round 2: 3
-                                    </ListItem>
-                                            <ListItem>
-                                                Round 3: 5
-                                    </ListItem>
+                                                <ListItemText
+                                                    primary={`Round ${phase.order}`}
+                                                    secondary={userThoughts}
+                                                />
+                                            </ListItem>
                                         </List>
-                                    </CardContent>
-                                </Grid>
-                            </Grid>
+                                    )
+                                }
+                            </CardContent>
                         </Card >
                     </Grid>
                 )
             }
         </Grid>
-    </div>
+    </div >
 
 export default Participants;

@@ -9,8 +9,7 @@ const RenderListItem = ({ label, text, children }) =>
         {children}
     </ListItem>
 
-const GameDetails = ({ game }) =>
-    game &&
+const GameDetails = ({ game, totalThoughts }) =>
     <Paper>
         <List>
             <RenderListItem
@@ -24,22 +23,22 @@ const GameDetails = ({ game }) =>
                 <UserAvatar name={game.creator.name} />
             </RenderListItem>
             {
-                game.participants &&
+                game.participants.length > 0 &&
                 <RenderListItem
                     label="Participants"
                 >
                     {
                         game.participants.map(participant =>
-                            <UserAvatar name={participant.name} />
+                            <UserAvatar key={participant._id} name={participant.name} />
                         )
                     }
                 </RenderListItem>
             }
             <RenderListItem
                 label="Total thoughts"
-                text={game.thoughts.length}
+                text={totalThoughts}
             />
         </List>
-    </Paper>
+    </Paper >
 
 export default GameDetails;

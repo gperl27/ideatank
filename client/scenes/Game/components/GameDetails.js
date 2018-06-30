@@ -11,7 +11,6 @@ const GameDetails = ({
     activePhase,
     game,
 }) =>
-    activePhase && game &&
     <Grid container justify="space-around" alignItems="flex-end">
         <Grid item xs>
             <Typography gutterBottom variant='display2'>Round {activePhase.order}</Typography>

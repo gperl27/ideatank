@@ -8,7 +8,7 @@ import UserAvatar from '../../../shared/UserAvatar';
 const Players = ({ authUser, players, usersTyping }) =>
     <Grid container alignItems="flex-end">
         {
-            players && players.map(player =>
+            players.map(player =>
                 <Grid item xs key={player._id}>
                     <Grid
                         container

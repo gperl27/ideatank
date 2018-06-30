@@ -1,5 +1,4 @@
 import React from 'react';
-import { push } from 'react-router-redux';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
@@ -58,41 +57,41 @@ class Game extends React.Component {
         } = this.props;
 
         return (
-            <Grid className={classes.root} container justify="center" alignItems="center">
-                <Grid item xs={8} >
-                    <Grid container direction="column" spacing={40}>
-                        <Grid item>
-                            <GameDetails
-                                isBrainstorming={isBrainstorming}
-                                timer={timer}
-                                game={game}
-                                activePhase={activePhase}
-                                startButton={this.renderStartButton()}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <Players
-                                authUser={authUser}
-                                players={game && game.roomUsers}
-                                usersTyping={usersTyping}
-                            />
-                        </Grid>
-                        <Grid item>
-                            {activePhase &&
+            game && activePhase ?
+                <Grid className={classes.root} container justify="center" alignItems="center">
+                    <Grid item xs={8} >
+                        <Grid container direction="column" spacing={40}>
+                            <Grid item>
+                                <GameDetails
+                                    isBrainstorming={isBrainstorming}
+                                    timer={timer}
+                                    game={game}
+                                    activePhase={activePhase}
+                                    startButton={this.renderStartButton()}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Players
+                                    authUser={authUser}
+                                    players={game.roomUsers}
+                                    usersTyping={usersTyping}
+                                />
+                            </Grid>
+                            <Grid item>
                                 <Typography gutterBottom variant="display1">
                                     {activePhase.instructions}
                                 </Typography>
-                            }
-                            <Whiteboard
-                                userIsTyping={userIsTyping}
-                                isBrainstorming={isBrainstorming}
-                                onSubmit={this.submit}
-                                activePhase={activePhase}
-                            />
+                                <Whiteboard
+                                    userIsTyping={userIsTyping}
+                                    isBrainstorming={isBrainstorming}
+                                    onSubmit={this.submit}
+                                    activePhase={activePhase}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+                : null
         )
     }
 }

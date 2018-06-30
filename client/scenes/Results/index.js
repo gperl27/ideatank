@@ -9,6 +9,8 @@ import Actions from './components/Actions';
 import Participants from './components/Participants';
 import Thoughts from './components/Thoughts';
 
+import { totalThoughts, participantsWithThoughtCounts } from './selector';
+
 import { redirectToLobby } from '../../modules/nav';
 
 const styles = {
@@ -25,46 +27,61 @@ class Results extends React.Component {
     }
 
     render() {
-        const { classes, game } = this.props;
-        console.log(game);
+        const {
+            classes,
+            game,
+            totalThoughts,
+            participants,
+            redirectToLobby,
+        } = this.props;
+
         return (
-            <Grid
-                className={classes.root}
-                justify="center"
-                alignItems="center"
-                container
-            >
-                <Grid item xs={8}>
-                    <Grid
-                        spacing={40}
-                        container
-                        direction="column"
-                        justify="space-around"
-                    >
-                        <Grid item>
-                            <Header />
-                        </Grid>
-                        <Grid item>
-                            <GameDetails game={game} />
-                        </Grid>
-                        <Grid item>
-                            <Thoughts />
-                        </Grid>
-                        <Grid item>
-                            <Participants />
-                        </Grid>
-                        <Grid item>
-                            <Actions />
+            game ?
+                <Grid
+                    className={classes.root}
+                    justify="center"
+                    alignItems="center"
+                    container
+                >
+                    <Grid item xs={8}>
+                        <Grid
+                            spacing={40}
+                            container
+                            direction="column"
+                            justify="space-around"
+                        >
+                            <Grid item>
+                                <Header />
+                            </Grid>
+                            <Grid item>
+                                <GameDetails
+                                    game={game}
+                                    totalThoughts={totalThoughts}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Thoughts phases={game.phases} />
+                            </Grid>
+                            <Grid item>
+                                <Participants participants={participants} />
+                            </Grid>
+                            <Grid item>
+                                <Actions
+                                    redirectToLobby={redirectToLobby}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+                : null
         )
     }
 }
 
 const mapStateToProps = state => ({
     game: state.game.activeGame,
+    totalThoughts: totalThoughts(state),
+    participants: participantsWithThoughtCounts(state)
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -45,7 +45,7 @@ const Whiteboard = ({
             </Grid>
             <Grid item sm={12} md={8} container>
                 {
-                    activePhase && activePhase.thoughts.map(thought =>
+                    activePhase.thoughts.map(thought =>
                         <Grid className={classes.thought} item xs={4} key={thought._id}>
                             <Grid container alignItems="center" wrap="nowrap">
                                 <UserAvatar className={classes.avatar} name={thought.user.name} />
