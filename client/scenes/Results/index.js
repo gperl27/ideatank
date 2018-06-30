@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, withStyles } from '@material-ui/core';
 
 import Header from './components/Header';
 import GameDetails from './components/GameDetails';
@@ -7,11 +7,19 @@ import Actions from './components/Actions';
 import Participants from './components/Participants';
 import Thoughts from './components/Thoughts';
 
-class Results extends React.Component {
+const styles = {
+    root: {
+        marginTop: 50,
+    },
+};
 
+class Results extends React.Component {
     render() {
+        const { classes } = this.props;
+
         return (
             <Grid
+                className={classes.root}
                 justify="center"
                 alignItems="center"
                 container
@@ -45,4 +53,4 @@ class Results extends React.Component {
     }
 }
 
-export default Results;
+export default withStyles(styles)(Results);
