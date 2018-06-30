@@ -93,7 +93,9 @@ export const createThought = ({ text }) => (dispatch, getState) => {
 }
 
 // View Logic
-export const delegatePhase = idea => (dispatch, getState) => {
+export const delegatePhase = () => (dispatch, getState) => {
+    const idea = getState().game.activeGame;
+
     if (idea.isCompleted) {
         dispatch(push('/results'))
         return
@@ -123,7 +125,7 @@ export const wsListeners = socket => {
 
     socket.on('end phase', idea => {
         store.dispatch({ type: UPDATE_TIMER, payload: 'Time is up!' })
-        store.dispatch(delegatePhase(idea))
+        store.dispatch(delegatePhase())
     })
 
     socket.on('is typing', ({ uid }) => {

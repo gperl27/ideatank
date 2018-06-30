@@ -9,12 +9,13 @@ const GameDetails = ({
     startButton,
     timer,
     activePhase,
+    game,
 }) =>
-    activePhase &&
+    activePhase && game &&
     <Grid container justify="space-around" alignItems="flex-end">
         <Grid item xs>
             <Typography gutterBottom variant='display2'>Round {activePhase.order}</Typography>
-            <Typography gutterBottom variant='display1'>{activePhase.description}</Typography>
+            <Typography gutterBottom variant='display1'>{game.description}</Typography>
             <Typography variant='title'>Round Length: {msToMinutes(activePhase.length)}</Typography>
         </Grid>
         <Grid item xs>

@@ -1,11 +1,10 @@
 import { push } from 'react-router-redux';
-import { reset } from 'redux-form'
 export const AUTH_USER = 'auth/AUTH_USER';
 export const AUTH_ERROR = 'auth/AUTH_ERROR';
 
 import { removeToken, fetchToken } from '../lib/auth';
 
-import { delegatePhase } from './game'
+import { FETCH_GAME, delegatePhase } from './game'
 import { joinGame } from './lobby';
 
 const initialState = {
@@ -39,9 +38,12 @@ export const fetchAuthUser = () => async dispatch => {
         const { user, currentIdea } = response.data;
         dispatch({ type: AUTH_USER, payload: user })
 
+        console.log()
+
         if (currentIdea) {
             dispatch(joinGame(currentIdea, false))
-            dispatch(delegatePhase(currentIdea))
+            dispatch({ type: FETCH_GAME, payload: currentIdea })
+            dispatch(delegatePhase())
         }
     } catch (e) {
         console.log(e, e.message);

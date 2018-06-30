@@ -65,6 +65,7 @@ class Game extends React.Component {
                             <GameDetails
                                 isBrainstorming={isBrainstorming}
                                 timer={timer}
+                                game={game}
                                 activePhase={activePhase}
                                 startButton={this.renderStartButton()}
                             />

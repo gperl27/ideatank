@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Idea = require('../models/idea');
+const Phase = require('../models/phase');
 const Thought = require('../models/thought');
 
 const oneSecond = 1000;
@@ -91,9 +92,9 @@ module.exports = io => {
         });
 
         socket.on('start game', async idea => {
-            const idea = await Idea.nextPhase(idea)
+            const updatedIdea = await Idea.nextPhase(idea)
 
-            io.in(idea._id).emit('game start', idea);
+            io.in(idea._id).emit('game start', updatedIdea);
 
             const ideas = await Idea.findIdeasInLobby();
 
@@ -116,8 +117,8 @@ module.exports = io => {
 
                     // go to next phase
                     let updatedIdea = await Idea.nextPhase(idea);
-                    io.in(idea._id).emit('end phase', updatedIdea);
                     io.in(idea._id).emit('update game', updatedIdea);
+                    io.in(idea._id).emit('end phase');
 
                     if (updatedIdea.isCompleted) {
                         io.in(idea._id).clients((error, clients) => {

@@ -50,6 +50,10 @@ const defaultPhases = [
 // seed the idea with the default game phases
 IdeaSchema.pre('save', function (next) {
     const idea = this;
+    if (!idea.isNew) {
+        next();
+        return
+    }
     const Phase = mongoose.model('Phase');
     const dbPromises = [];
 
@@ -63,7 +67,6 @@ IdeaSchema.pre('save', function (next) {
     // resolve every async write
     Promise.all(dbPromises)
         .then(vals => {
-            console.log(vals);
             next();
         })
 });
@@ -73,10 +76,43 @@ IdeaSchema.virtual('roomUsers').get(function () {
 });
 
 IdeaSchema.statics.findIdeasInLobby = function () {
-    return this.find({ isCompleted: false, 'phases.active': true })
-        .sort({ createdAt: 'descending' })
-        .populate('creator')
-        .populate('participants')
+    return this.aggregate([
+        { $match: { isCompleted: false } },
+        { $sort: { createdAt: 1 } },
+        {
+            $lookup: {
+                from: 'phases',
+                localField: 'phases',
+                foreignField: '_id',
+                as: 'phases'
+            }
+        },
+        { $unwind: "$phases" },
+        { $match: { "phases.order": 0, "phases.active": true } },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'participants',
+                foreignField: '_id',
+                as: 'participants'
+            }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'creator',
+                foreignField: '_id',
+                as: 'creator'
+            }
+        },
+        { $unwind: "$creator" },
+        {
+            $project: {
+                "creator.password": 0,
+                "participants.password": 0,
+            }
+        }
+    ])
 };
 
 IdeaSchema.statics.findByIdWithRelations = function (idea) {
@@ -95,38 +131,28 @@ IdeaSchema.statics.findByIdWithRelations = function (idea) {
         })
 };
 
-IdeaSchema.statics.nextPhase = function (idea) {
+IdeaSchema.statics.nextPhase = async function ({ idea }) {
+    const currentIdea = await this.findById(idea._id).populate('phases')
     const Phase = mongoose.model('Phase');
-    const currentPhase = idea.phases.find(phase => phase.active)
-    const nextPhase = idea.phases.find(phase => phase.order === currentPhase.order + 1)
+    const currentPhase = currentIdea.phases.find(phase => phase.active)
+    const nextPhase = currentIdea.phases.find(phase => phase.order === currentPhase.order + 1)
 
+    // set current phase's active to false no matter what
     let updates = [Phase.findByIdAndUpdate(currentPhase._id, { active: false })];
 
     // if there's no next phase
     // mark as complete
     // else mark the next phase as active
     if (!nextPhase) {
-        updates.push(this.findByIdAndUpdate(idea._id, { isCompleted: true }))
+        currentIdea.isCompleted = true;
+        updates.push(currentIdea.save())
     } else {
         updates.push(Phase.findByIdAndUpdate(nextPhase._id, { active: true }))
     }
 
+    // use arrow function here to still refer to Model 'this'
     return Promise.all(updates)
-        .then(function (_) {
-            return this.findById(idea._id)
-                .populate('creator')
-                .populate('participants')
-                .populate({
-                    path: 'phases',
-                    populate: {
-                        path: 'thoughts',
-                        populate: {
-                            path: 'user',
-                            model: 'User'
-                        }
-                    }
-                })
-        })
+        .then(_ => this.findByIdWithRelations(currentIdea._id))
 };
 
 

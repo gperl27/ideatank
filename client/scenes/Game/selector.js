@@ -17,5 +17,5 @@ export const isBrainstorming = createSelector(
 
 export const activePhase = createSelector(
     idea,
-    idea => idea && idea.phase.find(phase => phase.active)
+    idea => idea && idea.phases.find(phase => phase.active)
 )

@@ -11,12 +11,13 @@ before(done => {
 });
 
 beforeEach((done) => {
-    const { users, ideas, thoughts } = mongoose.connection.collections;
-
+    const { users, ideas, thoughts, phases } = mongoose.connection.collections;
 
     users.drop(() => {
         ideas.drop(() => {
-            thoughts.drop(() => done())
+            thoughts.drop(() => {
+                phases.drop(() => done())
+            })
         })
     });
 });
