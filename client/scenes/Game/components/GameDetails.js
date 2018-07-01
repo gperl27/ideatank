@@ -1,8 +1,7 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import { Grid, Typography } from '@material-ui/core';
 
-import { msToMinutes } from '../../../util';
+import { msToMinutes } from '../../../lib/util';
 
 const GameDetails = ({
     isBrainstorming,
@@ -19,15 +18,6 @@ const GameDetails = ({
         </Grid>
         <Grid item xs>
             <Grid container direction="column" alignItems="center" spacing={16}>
-                {/* {isBrainstorming &&
-                    <Grid item xs>
-                        <CircularProgress
-                            size={96}
-                            variant="static"
-                            value={normalizeTime(game.phase.length, timer)}
-                        />
-                    </Grid>
-                } */}
                 <Grid item xs>
                     <Typography variant="title">
                         {isBrainstorming ? msToMinutes(timer) : timer}

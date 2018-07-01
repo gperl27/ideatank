@@ -38,8 +38,6 @@ export const fetchAuthUser = () => async dispatch => {
         const { user, currentIdea } = response.data;
         dispatch({ type: AUTH_USER, payload: user })
 
-        console.log()
-
         if (currentIdea) {
             dispatch(joinGame(currentIdea, false))
             dispatch({ type: FETCH_GAME, payload: currentIdea })

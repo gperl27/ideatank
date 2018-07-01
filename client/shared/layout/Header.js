@@ -1,14 +1,8 @@
 import React from 'react';
 import { compose, bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import { withStyles, AppBar, Toolbar, Typography, IconButton, MenuItem, Menu } from '@material-ui/core';
+import AccountCircle from '@material-ui/icons/AccountCircle'
 
 import { signout } from '../../modules/auth';
 
@@ -53,7 +47,8 @@ class Header extends React.Component {
                     >
                         {process.env.APP_NAME || 'solvr'}
                     </Typography>
-                    {authUser && (
+                    {
+                        authUser &&
                         <div>
                             <IconButton
                                 aria-owns={open ? 'menu-appbar' : null}
@@ -81,7 +76,7 @@ class Header extends React.Component {
                                 <MenuItem onClick={this.handleSignout}>Sign Out</MenuItem>
                             </Menu>
                         </div>
-                    )}
+                    }
                 </Toolbar>
             </AppBar>
         )

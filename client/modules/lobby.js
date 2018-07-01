@@ -31,21 +31,21 @@ export const fetchIdeas = () => async dispatch => {
     })
 };
 
-export const startGame = idea => dispatch => {
+export const startGame = idea => _ => {
     socket.emit('start game', { idea });
 };
 
-export const joinGame = (idea, shouldUpdate = true) => (dispatch, getState) => {
+export const joinGame = (idea, shouldUpdate = true) => (_, getState) => {
     const { authUser } = getState().auth;
     socket.emit('join room', { idea, participant: authUser._id, shouldUpdate });
 }
 
-export const leaveGame = idea => (dispatch, getState) => {
+export const leaveGame = idea => (_, getState) => {
     const { authUser } = getState().auth;
     socket.emit('leave room', { idea, participant: authUser._id });
 }
 
-export const cancelGame = idea => (dispatch, getState) => {
+export const cancelGame = idea => (_, getState) => {
     const { authUser } = getState().auth;
     socket.emit('cancel game', { idea, creator: authUser._id });
 }
@@ -60,14 +60,9 @@ export const createIdea = ({ description }) => (dispatch, getState) => {
 // websocket listeners
 export const wsListeners = socket => {
     socket.on('lobby refresh', data => {
-        console.log('lobby refresh')
         store.dispatch({
             type: FETCH_IDEAS,
             payload: data
         })
-    })
-
-    socket.on('game start', data => {
-        store.dispatch(delegatePhase(data))
     })
 }

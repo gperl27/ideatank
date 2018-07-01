@@ -32,17 +32,17 @@ const defaultPhases = [
     },
     {
         order: 1,
-        length: 4000, // 120000
+        length: 10000, // 120000
         instructions: 'Solve Problems Here'
     },
     {
         order: 2,
-        length: 4000, //120000
+        length: 10000, //120000
         instructions: 'Solve Obstacles Here'
     },
     {
         order: 3,
-        length: 4000, //60000
+        length: 10000, //60000
         instructions: 'Solve Inspirtations Here'
     },
 ]

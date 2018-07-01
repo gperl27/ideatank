@@ -1,8 +1,7 @@
 import React from 'react';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+import { withStyles, Typography, Button, Grid } from '@material-ui/core';
 
 import GameDetails from './components/GameDetails';
 import Players from './components/Players';
@@ -18,7 +17,6 @@ import {
 import { redirectToLobby } from '../../modules/nav';
 
 import Whiteboard from './components/Whiteboard';
-import { withStyles, Typography } from '@material-ui/core';
 
 const styles = {
     root: {

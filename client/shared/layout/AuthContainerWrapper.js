@@ -1,10 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Grid, Paper, Divider, Button } from '@material-ui/core';
 
 const styles = {
     root: {

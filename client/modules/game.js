@@ -126,7 +126,7 @@ export const wsListeners = socket => {
         store.dispatch({ type: FETCH_GAME, payload: data })
     })
 
-    socket.on('phase change', idea => {
+    socket.on('phase change', _ => {
         store.dispatch({ type: UPDATE_TIMER, payload: 'n/a' })
         store.dispatch(delegatePhase())
     })

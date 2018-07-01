@@ -1,13 +1,10 @@
 import React, { Fragment } from 'react';
 import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
+import { Grid, Avatar, Button } from '@material-ui/core';
 
 import IdeaList from './components/IdeaList';
 import CreateIdeaFormContainer from './components/CreateIdeaFormContainer';
-
 import UserAvatar from '../../shared/UserAvatar';
 
 import {
@@ -21,6 +18,9 @@ import {
 import { signout } from '../../modules/auth';
 
 import { authUserIdea, authUserParticipantIdea } from './selector';
+
+// how many users we'll show before truncated the party list
+const PARTY_SIZE = 3;
 
 class Lobby extends React.Component {
 
@@ -36,7 +36,7 @@ class Lobby extends React.Component {
     }
 
     renderPartyMembers(participants, classes) {
-        let size = 3;
+        let size = PARTY_SIZE;
         const Participants = participants
             .slice(0, size)
             .map(user => {
