@@ -6,6 +6,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router'
 import io from 'socket.io-client';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import theme from './theme';
 import store, { history } from './store';
 
 import registerWsListeners from './websocket';
@@ -30,9 +32,11 @@ const renderApp = () => {
     return ReactDOM.render(
         <Provider store={store}>
             <ConnectedRouter history={history}>
-                <div>
-                    <App />
-                </div>
+                <MuiThemeProvider theme={theme}>
+                    <div>
+                        <App />
+                    </div>
+                </MuiThemeProvider>
             </ConnectedRouter>
         </Provider>,
         target

@@ -113,7 +113,7 @@ class Lobby extends React.Component {
                 justify="center"
                 alignItems="center"
             >
-                <Grid item xs={10}>
+                <Grid item xs={8}>
                     <CreateIdeaFormContainer
                         ctaText="The next greatest thing is..."
                         didAuthUserCreateAnIdea={!!authUserIdea}
