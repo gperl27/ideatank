@@ -16,6 +16,9 @@ const UserSchema = mongoose.Schema({
 UserSchema.pre('save', function (next) {
     // get access to the user model
     const user = this;
+    if (!user.isNew) {
+        return next();
+    }
     const saltRounds = 10;
     // generate a salt then run callback
     bcrypt.genSalt(saltRounds, function (err, salt) {
@@ -47,7 +50,7 @@ UserSchema.virtual('currentIdea').get(function () {
         $or: [
             { creator: this._id },
             {
-                participants: {
+                participants: { // TODO double check this
                     _id: this._id
                 }
             }

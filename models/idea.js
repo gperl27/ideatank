@@ -7,11 +7,12 @@ const IdeaSchema = mongoose.Schema({
     },
     isCompleted: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
     },
     phases: [{ // using save hook to create default phases
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Phase',
+        ref: 'Phase'
     }],
     creator: { // validate required
         type: mongoose.Schema.Types.ObjectId,
@@ -32,18 +33,18 @@ const defaultPhases = [
     },
     {
         order: 1,
-        length: 10000, // 120000
-        instructions: 'Solve Problems Here'
+        length: 120000, // 120000
+        instructions: 'What are the problems this idea is solving?'
     },
     {
         order: 2,
-        length: 10000, //120000
-        instructions: 'Solve Obstacles Here'
+        length: 120000, //120000
+        instructions: 'What are the obstacles this idea faces?'
     },
     {
         order: 3,
-        length: 10000, //60000
-        instructions: 'Solve Inspirtations Here'
+        length: 60000, //60000
+        instructions: 'What are some inspirations or similar concepts to this idea?'
     },
 ]
 
@@ -51,8 +52,7 @@ const defaultPhases = [
 IdeaSchema.pre('save', function (next) {
     const idea = this;
     if (!idea.isNew) {
-        next();
-        return
+        return next();
     }
     const Phase = mongoose.model('Phase');
     const dbPromises = [];

@@ -139,8 +139,6 @@ module.exports = io => {
                 socket.emit('intermission timer', countdown);
                 countdown -= oneSecond;
 
-                console.log(countdown)
-
                 if (countdown <= 0) {
                     clearInterval(timer);
                     socket.emit('end intermission');
