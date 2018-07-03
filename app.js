@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -9,11 +8,11 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 const corsOptions = {
-  origin: 'http://localhost:1234',
+  origin: process.env.CORS_HOST,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-mongoose.connect(`mongodb://${process.env.DEV_DB_USERNAME}:${process.env.DEV_DB_PASSWORD}@ds263670.mlab.com:63670/ideatank`);
+mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ds263670.mlab.com:63670/ideatank`);
 
 const api = require('./routes/index');
 
@@ -23,9 +22,6 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
