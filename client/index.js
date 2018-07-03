@@ -14,8 +14,16 @@ import registerWsListeners from './websocket';
 
 // global requires
 window.axios = require('axios');
+
+// which api to consume
+if (process.env.NODE_ENV === 'production') {
+    window.apiUri = process.env.PROD_API_URI
+} else {
+    window.apiUri = process.env.DEV_API_URI
+}
+
 // we want the client socket to only connect once
-window.socket = io('http://localhost:3000');
+window.socket = io(window.apiUri);
 registerWsListeners(socket);
 
 import App from './scenes';

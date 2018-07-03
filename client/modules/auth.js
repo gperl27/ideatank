@@ -34,7 +34,7 @@ export default (state = initialState, action) => {
 
 export const fetchAuthUser = () => async dispatch => {
     try {
-        const response = await axios.get('http://localhost:3000/api/auth/user')
+        const response = await axios.get(`${window.apiUri}/api/auth/user`)
         const { user, currentIdea } = response.data;
         dispatch({ type: AUTH_USER, payload: user })
 
@@ -52,7 +52,7 @@ export const fetchAuthUser = () => async dispatch => {
 
 export const signup = formData => async dispatch => {
     fetchToken(
-        'http://localhost:3000/api/auth/register',
+        `${window.apiUri}/api/auth/register`,
         formData,
         () => dispatch(push('/')),
         (e) => dispatch({ type: AUTH_ERROR, payload: e.message })
@@ -61,7 +61,7 @@ export const signup = formData => async dispatch => {
 
 export const signin = formData => async dispatch => {
     fetchToken(
-        'http://localhost:3000/api/auth/login',
+        `${window.apiUri}/api/auth/login`,
         formData,
         () => dispatch(push('/')),
         (e) => dispatch({ type: AUTH_ERROR, payload: e.message })

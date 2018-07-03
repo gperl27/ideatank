@@ -24,7 +24,7 @@ export default (state = initialState, action) => {
 
 // Actions
 export const fetchIdeas = () => async dispatch => {
-    const result = await axios.get('http://localhost:3000/api/ideas/lobby')
+    const result = await axios.get(`${window.apiUri}/api/ideas/lobby`)
     dispatch({
         type: FETCH_IDEAS,
         payload: result.data
