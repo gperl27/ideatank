@@ -12,6 +12,8 @@ const corsOptions = {
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
+console.log(process.env.DB_USERNAME, process.env.DB_PASSWORD, process.env.DB_NAME);
+
 mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ds263670.mlab.com:63670/${process.env.DB_NAME}`);
 
 const api = require('./routes/index');
