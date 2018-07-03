@@ -12,7 +12,7 @@ const corsOptions = {
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ds263670.mlab.com:63670/ideatank`);
+mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@ds263670.mlab.com:63670/${process.env.DB_NAME}`);
 
 const api = require('./routes/index');
 
