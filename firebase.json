@@ -14,7 +14,7 @@
     ],
     "headers": [
       {
-        "source": "index.html",
+        "source": "**",
         "headers": [
           {
             "key": "Access-Control-Allow-Origin",
