@@ -7,9 +7,10 @@
   },
   "scripts": {
     "parcel": "parcel client/index.html --no-hmr",
-    "start": "nodemon --ignore client/ --ignore dist/ --ignore .cache/ --exec 'node ./bin/www'",
+    "start": "node ./bin/www",
     "test": "nodemon --exec 'mocha'",
-    "dev": "concurrently \"npm run start\" \"npm run parcel\""
+    "start-dev": "nodemon --ignore client/ --ignore dist/ --ignore .cache/ --exec 'node ./bin/www'",
+    "dev": "concurrently \"npm run start-dev\" \"npm run parcel\""
   },
   "dependencies": {
     "@material-ui/core": "^1.2.2",
